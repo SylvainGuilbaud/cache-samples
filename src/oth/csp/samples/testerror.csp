@@ -1,0 +1,36 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of a page that generates an error to test error trapping out.">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+<isc:SAMPLE title="CSP Test Error Page">
+Test the error trapping by generating either an error in a hyper-event or
+an error in the creation of this page.
+</isc:SAMPLE>
+
+<script language="Cache" runat="server">
+	; If the parameter 'GenerateError' is set then create a
+	; <DIVIDE> error.
+	If %request.IsDefined("GenerateError") {
+		; Generate an error
+		If 1/0
+	}
+</script>
+
+<br><br>
+
+<form name="Demo">
+	<input type="submit" name="GenerateError" value="Create page error"><p>
+	<input type="button" value="Create Hyper-Event error" onclick="#server(..HyperError())#">
+</form>
+
+<!-- Hyper-Event method -->
+<script language="Cache" method="HyperError" arguments="">
+	; Generate a deliberate error in the hyper-event method
+	If 1/0
+</script>
+
+</body>
+</html>

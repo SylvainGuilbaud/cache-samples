@@ -1,0 +1,9 @@
+/* @class="ZENTest.customSVGComponent" */
+.customSVGComponent {
+	fill: url(#myGrad);
+	stroke: black;
+	stroke-width: 2px;
+}
+/* @class="ZENTest.customComponent" */
+/* @class="ZENTest.customTable" */
+/* EOF */

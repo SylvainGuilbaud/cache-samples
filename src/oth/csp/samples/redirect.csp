@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Use <b>%response.Redirect</b> property to redirect the HTTP request.">
+
+<html>
+<head></head>
+<body>
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	Set %response.Redirect=$get(%request.Data("redirect",1),"menu.csp")
+	Quit 1
+</script>
+</body>
+</html>

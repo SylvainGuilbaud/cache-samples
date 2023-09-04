@@ -1,0 +1,66 @@
+<!-- Copyright (c) 2002 InterSystems Inc. ALL RIGHTS RESERVED. -->
+
+<!-- All error pages MUST inherit from %CSP.Error -->
+<csp:class super="%CSP.Error" description="PRIVATE:Demo of how to write a silent application error page">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Example application error page">
+The sample demonstrates how to write your own application error
+page. This differs from the other sample error page because it
+just logs the error and does not display any information about
+it to the user which is safer on a live application.
+</isc:SAMPLE>
+
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	Quit 1
+</script>
+
+<!-- The HyperEventError method is called when an error occurs while running -->
+<!-- the hyperevent method. This should generate JavaScript back to the browser -->
+<script language="Cache" method="HyperEventError" arguments="" returntype="">
+	New message
+	#; This decomposes the error and returns a string with the error details in it.
+	Set message=##class(%CSP.LogError).ErrString()
+	Set $ztrap="LogMe"
+	#; Setting $ECode will generate an error. We insert the information in here because
+	#; $Zerror can only contain 128 characters maximum and this is also logged by
+	#; the standard error trap.
+	Set $ECode=message
+:LogMe	Set $ztrap=""
+	Set $ZError=$$$GetSimpleMessage("%CSP","ErrorZE")
+	#; Log the error in the standard error log, insert your logging mechanism here
+	Do BACK^%ETN
+	#; Display a simple error message that does not give any information about the application away
+	Write "alert('",$$$GetSimpleMessage("%CSP","Error"),"');",!
+	Quit
+</script>
+
+<script language="Cache" runat="server">
+	New message
+	#; This decomposes the error and returns a string with the error details in it.
+	Set message=##class(%CSP.LogError).ErrString()
+	Set $ztrap="LogMe2"
+	#; Setting $ECode will generate an error. We insert the information in here because
+	#; $Zerror can only contain 128 characters maximum and this is also logged by
+	#; the standard error trap.
+	Set $ECode=message
+:LogMe2	Set $ztrap=""
+	Set $ZError=$$$GetSimpleMessage("%CSP","ErrorZE")
+	#; Log the error in the standard error log, insert your logging mechanism here
+	Do BACK^%ETN
+	Set msg=$$$GetSimpleMessage("%CSP","Error")
+	#; Display a simple error message that does not give any information about the application away
+	&html<<html><head><title>Error</title></head>
+	<body>
+	#(..EscapeHTML(msg))#
+	</body>
+	</html>>
+</script>
+
+</body>
+</html>

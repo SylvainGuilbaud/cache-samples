@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MsgFile Language="nl">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Source</Message>
+      <Message Id="menu">Voorbeeld Menu</Message>
+      <Message Id="Language">Nederlands</Message>
+      <Message Id="LangEnglish">Dutch</Message>
+      <Message Id="LangComment">Demonstratie van het tonen van een pagina in een lokale taal</Message>
+      <Message Id="LangTitle">Voorbeeld van Taal onafhankelijk maken van een toepassing</Message>
+      <Message Id="LangDesc">Dit voorbeeld toont hoe een CSP pagina getoond wordt in een geselecteerde taal of in
+de taal bij voorkeur van de browser.</Message>
+      <Message Id="LangText1">
+Deze pagina is vertaald in een aantal talen.
+Deze initiele pagina verschijnt in de taal ingesteld
+als voorkeurtaal van de browser.</Message>
+      <Message Id="LangText2">
+Om deze pagina te tonen in andere taal, klik op de "Verander Taal" knop.
+Alle andere volgende pagina's in deze sessie zullen dan in deze taal verschijnen.</Message>
+      <Message Id="LangText3">
+Selecteer een taal en klik op de knop "Toon Code" om het
+XML bestand van een bepaalde vertaling te zien.</Message>
+      <Message Id="LangText4">
+De source kode van deze pagina dient als een voorbeeld van taalonafhankelijke pagina's.
+Dit voorbeeld toont tevens de code dat de vertaling uitvoert.</Message>
+      <Message Id="LangSet">Verander Taal</Message>
+      <Message Id="LangDisplay">Toon Code</Message>
+   </MsgDomain>
+</MsgFile>

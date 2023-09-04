@@ -1,0 +1,37 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of calling a private page.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Protected Page Sample">
+This page calls the page, protected.csp, with account balance information.
+Protected.csp is protected by both being private and having encoded query parameters.
+You cannot request it directly via a URL or modify its parameters directly
+in the URL, instead it is only accessible from a link from another CSP page.
+</isc:SAMPLE>
+
+<hr>
+
+<!-- HTML Form to gather user input -->
+<form name="theForm">
+<font size="+1">
+
+<br>
+<b>BALANCE:</b>&nbsp;&nbsp;
+    <input name="BALANCE" size="5" type="text" value='#(..EscapeHTML($get(%request.Data("BALANCE",1),1000)))#'>&nbsp;&nbsp;&nbsp;&nbsp;
+    <i>Account balance to pass to the protected page.</i>
+<br><br>
+<input type="button" value="View Balance"
+    onclick="self.document.location=
+      #server(..Link('protected.csp?BALANCE='+self.document.theForm.BALANCE.value))#;">
+
+</form>
+</font>
+</body>
+</html>

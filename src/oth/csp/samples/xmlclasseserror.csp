@@ -1,0 +1,21 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="PRIVATE: Error reporting for displaying class instances as XML.">
+
+<html>
+<head>
+	<csp:class private="1">
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Class Display Error">
+Unable to display class instances:<br>
+</isc:SAMPLE>
+
+<p><div><font color="red" size="+1">#(..EscapeHTML($get(%request.Data("ERROR",1))))#</font></div>
+<p><a href="xmlclasses.csp">Return to class selection page</a>
+<p><p>
+
+</body>
+</html>

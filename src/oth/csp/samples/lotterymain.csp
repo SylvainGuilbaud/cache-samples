@@ -1,0 +1,77 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils" description="PRIVATE:Main page of Lottery Example.">
+
+<title>LotteryMain</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+	.Number { background: #FFFFFF; color: #0000FF; border-color: black; border-width: 1px; border-style: solid; }
+</style>
+
+
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<!-- TEST FOR UNAUTHORIZED ACCESS BY CHECKING SESSION DATA -->
+<csp:if condition='($Get(%session.Data("USERID"))="")'>
+
+<!-- DISPLAY A STANDARD UNAUTHORIZED ACCESS METHOD USING AN INHERITED METHOD. -->
+#(..displayUnauthorized())#
+
+<csp:else>
+<font face="Lucida Sans" color="yellow" size="+3">
+
+Today's winning number will be: <span class=Number>&nbsp;#(..EscapeHTML(..todaysNumber()))#&nbsp;</span>
+
+<!-- UPDATE THE CURRENT ACCOUNT BALANCE -->
+<script language="Cache" runat="server">
+	; add purchase to user
+	Set charge=##class(LotteryUser).addPurchase($Get(%session.Data("USERID")),$Get(%session.Data("PURCHASE")))
+	Set %session.Data("PURCHASE")=""
+
+	; update running total
+	Set %session.Data("TOTAL")=$Get(%session.Data("TOTAL"),0)+charge
+</script>
+
+<p>You will be billed <b>$#($Get(%session.Data("TOTAL")))#</b> for this session.
+
+<hr>
+<p align="center">What would you like to do next?</font>
+
+<form name="selectionForm">
+<p align="center"><input type="button" name="Standard" value="Generate a Standard Number" onclick="#call(..gotoMain('STANDARD'))#">
+<p align="center"><input type="button" name="Deluxe" value="Generate a Deluxe Number" onclick="#call(..gotoMain('DELUXE'))#">
+<p align="center"><input type="button" name="History" value="View Your Account History" onclick="self.document.location='#url(lotteryhistory.csp)#';">
+<p align="center"><input type="button" name="Exit" value="Leave Lottery-o-Matic" onclick="self.document.location='#url(lotteryend.csp)#';">
+</form>
+</font>
+
+</font>
+
+</csp:if>
+
+<script language="Cache" method="todaysNumber" arguments="" returntype="%String">
+	; Returns string containing today's lottery number
+	If $Get(%session.Data("PURCHASE"))'="" Set %session.Data("TODAYSNUMBER")=$Random(99)_"-"_$Random(99)_"-"_$Random(99)_"-"_$Random(99)
+	Quit $Get(%session.Data("TODAYSNUMBER"))
+</script>
+
+<script language="Cache" method="gotoMain" arguments="type:%String" returntype="%String">
+	; Set type of purchase, jump to next page
+	Set %session.Data("PURCHASE")=type
+	Write "CSPPage.document.location ='"_..Link("lotterymain.csp")_"';",$C(13,10)
+
+	Quit ""
+</script>
+
+</body>
+</html>

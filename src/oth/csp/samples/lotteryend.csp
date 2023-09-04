@@ -1,0 +1,44 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils" description="PRIVATE:End page of Lottery Example.">
+
+<title>LoginEnd</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<!-- TERMINATE THIS SESSION AFTER SERVING THIS PAGE -->
+<script language="Cache" runat="server">
+	Set %session.EndSession=1
+</script>
+
+<!-- TEST FOR UNAUTHORIZED ACCESS BY CHECKING SESSION DATA -->
+<csp:if condition='(%session.Get("USERID")="")'>
+
+<!-- DISPLAY A STANDARD UNAUTHORIZED ACCESS METHOD USING AN INHERITED METHOD. -->
+#(..displayUnauthorized())#
+
+<csp:else>
+<font face="Lucida Sans" color="yellow" size="+3">
+Thank you for visiting <font color="red">Lottery-o-matic</font>.
+<p>You have been billed <b>$#(..EscapeHTML(%session.Get("TOTAL",0)))#</b> for this session.
+
+<hr>
+
+<p>Please visit <a href="#url(lottery.csp)#">Again</a>.
+
+<p>Go back to <a href="#url(menu.csp)#">Samples Menu</a>.
+</font>
+
+</csp:if>
+
+</body>
+</html>

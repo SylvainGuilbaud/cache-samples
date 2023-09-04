@@ -1,0 +1,74 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils" description="PRIVATE:History page of Lottery Example.">
+
+<title>Lottery History</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<style type="text/css">
+	.DarkRow { background: #DDDDDD; }
+	.LightRow { background: #FFFFFF; }
+</style>
+
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<!-- TEST FOR UNAUTHORIZED ACCESS BY CHECKING SESSION DATA -->
+<csp:if condition='(%session.Get("USERID")="")'>
+
+<!-- DISPLAY A STANDARD UNAUTHORIZED ACCESS METHOD USING AN INHERITED METHOD. -->
+#(..displayUnauthorized())#
+
+<csp:else>
+<font face="Verdana,Arial" color=yellow size="+3">
+
+<!-- USERNAME is escaped to not allow user entered HTML to leak into page -->
+<p>Account History for #(..EscapeHTML(%session.Get("USERNAME")))#
+<p>
+
+<!-- DEFINE A QUERY TO DISPLAY USER HISTORY -->
+<script language="SQL" name="query" P1='#(%session.Get("USERID"))#'>
+SELECT TheUser->UserName As Name, ActivityTime, ActivityType As Activity, Product, '$'||CAST(Amount AS VARCHAR(20)) As Amount
+FROM SQLUser.LotteryActivity
+WHERE TheUser = ?
+</script>
+
+<!-- CREATE A TABLE TO DISPLAY THE RESULTS -->
+
+<table border="1" bgcolor="#DDDDFF" cellpadding="3">
+<tr>
+
+	<!-- LOOP OVER COLUMNS TO CREATE COLUMN HEADERS -->
+	<csp:while counter="col" condition="(col<query.GetColumnCount())">
+	<th align="left"><b>#(..EscapeHTML(query.GetColumnName(col)))#</b></th>
+	</csp:while>
+</tr>
+
+<!-- NOW LOOP OVER ALL ROWS IN THE RESULT SET -->
+<csp:while counter="row" condition="query.Next()">
+
+<!-- USE ALTERNATING STYLES FOR ROW FOR ZEBRA EFFECT (# is modulo operator) -->
+<tr class='#($S(row#2:"DarkRow",1:"LightRow"))#'>
+
+	<!-- LOOP OVER COLUMNS TO SHOW DATA -->
+	<csp:while counter="col" condition="(col<query.GetColumnCount())">
+	<td>#(..EscapeHTML(query.GetData(col)))#</td>
+	</csp:while>
+</tr>
+</csp:while>
+</table>
+
+<p><a href="#url(lotterymenu.csp)#">Back</a>
+
+</font>
+</csp:if>
+
+</body>
+</html>

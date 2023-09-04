@@ -1,0 +1,19 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Use server side include to include a fragment of a CSP page.">
+
+<html>
+<head></head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Server Side Include Sample">
+<!-- #include file=textfragment.inc -->
+</isc:SAMPLE>
+
+<h3>
+The body of this CSP page in contained within the page.<br>
+The sample description above was included from textfragment.inc
+</h3>
+</body>
+</html>
+

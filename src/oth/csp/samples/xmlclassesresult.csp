@@ -1,0 +1,36 @@
+<script language="Cache" runat="server">
+	Set writer=##class(%XML.Writer).%New()
+	Do writer.RootElement("Instances")
+	Set writer.Indent=1
+</script>
+<csp:query name="class" classname='#($get(%request.Data("CLASS",1)))#' queryname="Extent">
+<csp:while condition="class.Next()">
+<script language="Cache" runat="server">
+	Set oref=$zobjclassmethod($get(%request.Data("CLASS",1)),"%OpenId",class.GetData(1))
+	Set status=writer.Object(oref)
+	If $$$ISERR(status) Do ..ShowError(status) Quit
+</script>
+</csp:while>
+<script language="Cache" runat="server">
+	Do writer.EndRootElement()
+</script><script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	// Display an error if no class selected or class is not XMLENABLED
+	New error,cc
+	Set error=""
+	If $get(%request.Data("CLASS",1))="" {
+		Set error="No class has been selected"
+	} ElseIf '##class(%CompiledClass).GetClassParameter($get(%request.Data("CLASS",1)),"XMLENABLED") {
+		Set error="Class is not XML enabled: "_..EscapeURL($get(%request.Data("CLASS",1)))
+	}
+	if error'="" {
+		Set %response.Redirect="xmlclasseserror.csp?ERROR="_error
+		Quit 1
+	}
+
+	// Force the content-type of the reponse to text/xml
+	Set %response.ContentType="text/xml"
+	Set %response.CharSet="utf-8"
+	Quit 1
+</script>
+<csp:class description="PRIVATE: Display class instances as XML.">
+

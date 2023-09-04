@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<MsgFile Language="sv">
+<MsgDomain Domain="sample">
+<Message Id="source">Källkod</Message> 
+<Message Id="menu">Exempelmeny</Message> 
+<Message Id="Language">Svenska</Message> 
+<Message Id="LangEnglish">Swedish</Message> 
+<Message Id="LangComment">Demo: Visa sida på lokalt språk</Message> 
+<Message Id="LangTitle">Språkanpassning - Exempel</Message> 
+<Message Id="LangDesc">Detta exempel visar hur man visar en CSP-sida i antingen webbläsarens standardspråk eller ett annat, valfritt språk.</Message> 
+<Message Id="LangText1">Sidan är översatt till ett antal språk och visas initialt i det av dessa språk som är valt som standard i din webbläsare.</Message> 
+<Message Id="LangText2">För att visa sidan i ett annat språk än standardspråket, välj språk nedan och tryck på knappen "Välj språk". All följande översatta sidor i denna session kommer att visas i det valda språket.</Message> 
+<Message Id="LangText3">För att visa XML-filen för en viss översättning, välj språk nedan och tryck på knappen "Visa XML-fil".</Message> 
+<Message Id="LangText4">Denna sidas källkod är ett exempel på språkanpassning. Exemplet visar också koden som läser in översättningarna.</Message> 
+<Message Id="LangSet">Välj språk</Message> 
+<Message Id="LangDisplay">Visa XML-fil</Message> 
+</MsgDomain>
+</MsgFile>

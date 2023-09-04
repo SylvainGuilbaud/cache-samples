@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MsgFile Language="fr">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Source</Message>
+      <Message Id="menu">Menu des Exemples</Message>
+      <Message Id="Language">Français</Message>
+      <Message Id="LangEnglish">French</Message>      
+      <Message Id="LangComment">Demo de l'affichage d'une page dans la langue locale</Message>
+      <Message Id="LangTitle">Exemple de Localisation de Langage</Message>
+      <Message Id="LangDesc">Cet exemple illustre comment afficher une page CSP en utilisant
+la langue préférée du navigateur ou une langue sélectionnée.</Message>
+      <Message Id="LangText1">
+Cette page a été traduite en plusieurs langues.
+Elle apparaît au début dans la langue préférée parmi ces langues,
+comme indiqué par les configurations de votre navigateur.</Message>
+      <Message Id="LangText2">
+Pour afficher cette page dans une autre langue que la langue préférée,
+choisissez la langue ci-dessous et cliquez sur le bouton "Changez la Langue".
+Toutes les pages ultérieures localisées en cette session seront affichées
+en utilisant la langue sélectionnée.</Message>
+      <Message Id="LangText3">
+Pour afficher le fichier de ressource XML contenant une traduction particulière,
+choisissez la langue ci-dessous et cliquez le bouton "Afficher la Ressource".</Message>
+      <Message Id="LangText4">
+Le code source de cette page sert d'exemple pour procéder à une localisation.
+Cet exemple montre également le code qui charge les traductions.</Message>
+      <Message Id="LangSet">Changez le Langue</Message>
+      <Message Id="LangDisplay">Afficher la Ressource</Message>
+   </MsgDomain>
+</MsgFile>

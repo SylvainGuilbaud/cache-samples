@@ -1,0 +1,44 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+
+<svg width="300" height="240" style="fill:black" viewBox="0 0 210 210" onload="init(evt);" xml:space="preserve" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" zoomAndPan="magnify">
+<script>
+<![CDATA[
+      
+var SVGDocument;
+function init(evt)
+{
+      SVGDocument = document;
+      
+      ParentGroup1 = SVGDocument.getElementById("slices")
+}
+     
+]]>
+</script>
+
+<defs>
+<linearGradient id="Ensemble_background">
+ <stop offset="0%" style="stop-color:#E0E0FF"/>
+ <stop offset="100%" style="stop-color:#A0A0FF"/>
+</linearGradient>
+</defs>
+<rect x="0px" y="0px" width="100%" height="210px" style="fill:url(#Ensemble_background); "/>
+<text id="title_free" x="5" y="15" style="stroke:none; fill:black; font-family:Arial; font-size:8pt;">Free Space</text>
+<text id="title_used" x="5" y="35" style="stroke:none; fill:black; font-family:Arial; font-size:8pt;">Space Used</text>
+
+<g id="hiddenChart" transform="translate(110, 125)">
+
+<g>
+<g id="slices">
+ 
+</g>
+<g id="pieitemlabel">
+<text x="50" y="210" id="labelitem" style="text-anchor:end;font-size:13pt;font-weight:bold" startOffset="0"> </text>
+<text x="50" y="210" id="labelamount" style="text-anchor:start;font-size:13pt;" startOffset="0"> </text>
+</g>
+
+</g>
+</g>
+</svg>
+

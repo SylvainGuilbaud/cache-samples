@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<csp:class description="PRIVATE: Display result of an SQL Query as XML.">
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	// Initialize variable for column names
+	New cols
+	// Force the content-type of the reponse to text/xml
+	Set %response.ContentType="text/xml"
+	Quit 1
+</script>
+<script language="SQL" name="query" P1='#($get(%request.Data("P1",1),"A"))#' P2='#($get(%request.Data("P2",1),"B"))#'>
+#(%request.Get("QUERY","SELECT Name FROM Sample.Person"))#
+</script>
+<QueryResult>
+	<SQL>#(..EscapeHTML($get(%request.Data("QUERY",1),"SELECT Name FROM Sample.Person")))#</SQL>
+	<Result>
+	<script language="cache" runat="server">
+		New colnames
+		For col=1:1:query.GetColumnCount() {
+			Set colnames(col)=query.GetColumnHeader(col)
+		}
+	</script>
+	<csp:while counter="row" condition="query.Next()">
+		<Row>
+		<csp:while counter="col" condition='(col<query.GetColumnCount())'>
+			<#(..EscapeHTML(colnames(col)))#>#(..EscapeHTML(query.GetData(col)))#</#(..EscapeHTML(colnames(col)))#>
+		</csp:while>
+		</Row>
+	</csp:while>
+	</Result>
+</QueryResult>

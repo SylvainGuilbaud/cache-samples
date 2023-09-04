@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MsgFile Language="de">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Sourcecode</Message>
+      <Message Id="menu">Beispielmenü</Message>
+      <Message Id="Language">Deutsch</Message>
+      <Message Id="LangEnglish">German</Message>
+      <Message Id="LangComment">Beispiel einer mehrsprachigen Seite</Message>
+      <Message Id="LangTitle">Mehrsprachiges Beispiel</Message>
+      <Message Id="LangDesc">Dieses Beispiel zeigt, wie man eine CSP-Seite anzeigt, die entweder
+die im Browser eingestellte oder eine ausgewählte Sprache verwendet.</Message>
+      <Message Id="LangText1">
+Diese Seite wurde in verschiedene Sprachen übersetzt. Defaultmäßig
+erscheint sie in der Sprache, die im Browser eingestellt ist.</Message>
+      <Message Id="LangText2">
+Um diese Seite in einer anderen Sprache anzuzeigen, wählen Sie
+eine Sprache aus und klicken auf "Sprache wechseln".
+Alle weiteren mehrsprachigen Seiten dieser Session werden dann mit der
+ausgewählten Sprache angezeigt.</Message>
+      <Message Id="LangText3">
+Um den XML resource file anzuzeigen, der eine bestimmte Übersetzung
+enthält, wählen Sie eine Sprache aus und klicken auf "Resource anzeigen".</Message>
+      <Message Id="LangText4">
+Der Sourcecode dieser Seite dient als Beispiel für eine mehrsprachige Anwendung und
+zeigt wie man übersetzte Seiten lädt.</Message>
+      <Message Id="LangSet">Sprache wechseln</Message>
+      <Message Id="LangDisplay">Resource anzeigen</Message>
+   </MsgDomain>
+</MsgFile>

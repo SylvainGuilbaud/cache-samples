@@ -1,0 +1,92 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Launch page for Lottery Example Application.">
+
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils">
+
+<title>Lottery Demo</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<csp:if condition=($Get(%session.Data("USERNAME"))'=""&($Get(%request.Data("Password",1))'=""))>
+	<p align="center">
+	<font face="Lucida Sans" color="yellow" size="+3">
+	<font color="red"><b>Username and password incorrect.</b></font></p>
+	<p align="center">Please reenter or <a href=#url(lotteryjoin.csp)#>join</a> to login</p></font>
+<csp:else>
+	<font face="Lucida Sans" color="yellow" size="+3">
+	<p>Welcome to Lottery-o-matic, the world's premier lottery number selection service!
+	<p>If you would like to become a member, you can <a href="#url(lotteryjoin.csp)#">JOIN HERE</a>.
+	<p>If you are a member, please login here:
+	</font>
+</csp:if>
+
+<p align="center">
+<form method="post" action="" name="loginForm">
+  <table cellspacing="3">
+    <tr> 
+      <td> 
+        <div align="right"><font face="Lucida Sans" color="yellow" size="+2">User Name:</font></div>
+      </td>
+      <td> 
+        <input type="text" name="UserName">
+      </td>
+    </tr>
+    <tr> 
+      <td> 
+        <div align="right"><font face="Lucida Sans" color="yellow" size="+2">Password:</font></div>
+      </td>
+      <td> 
+        <input type="password" name="Password">
+      </td>
+    </tr>
+    <tr>
+      <td>&nbsp;</td>
+      <td>
+        <input type="submit" name="Submit" value="Login">
+      </td>
+    </tr>
+ </font></table>
+</form>
+</p>
+
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	#; Authenticate user/password on server
+	New id,user,UserName,Password
+	
+	Set UserName=$Get(%request.Data("UserName",1)),Password=$Get(%request.Data("Password",1))
+
+	#; If username and password not submitted then display form to enter them
+	If ((UserName="")&&(Password="")) Set %session.Data("USERID")="" Quit 1
+	
+	Set id=##class(LotteryUser).authenticate(UserName,Password)
+	
+	If (id'="") {
+		Set user=##class(LotteryUser).%OpenId(id)
+		Set user.VisitCount=user.VisitCount+1
+		Set %session.Data("USERID")=id
+		Set %session.Data("USERNAME")=UserName
+		Set %session.Data("VISITNO")=user.VisitCount
+		Set %session.Data("PURCHASE")="STANDARD"
+		Set %session.Data("TOTAL")=0
+		Do user.%Save()
+		Set %response.Redirect=..Link("lotterymenu.csp")
+	} Else {
+		Set %session.Data("USERID")=""
+		Set %session.Data("USERNAME")=UserName
+	}
+	Quit 1
+</script>
+
+</body>
+
+
+</html>

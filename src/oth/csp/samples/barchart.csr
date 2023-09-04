@@ -1,0 +1,85 @@
+<!-- --------------------------------------------------------------- -->
+<!--
+This file contains the rule definitions for a set of custom HTML tags
+that implement a simple HTML barchart (used by the custom.csp sample). 
+The actual barchart is rendered by creating an HTML table containing a
+set of images that are stretched to the appropriate size.
+
+There are two tags: isc:barchart (which declares a barchart) and
+isc:element (which defines the data elements within the barchart).
+
+-->
+
+<!-- --------------------------------------------------------------- -->
+<!--
+Define a rule that is fired whenever we encounter an isc:barchart tag).
+-->
+
+<csr:rule name="iscbarchart" match="isc:BARCHART" language="any">
+
+<csr:description>
+Defines a bar chart. The contents of the bar chart are defined using the
+isc:element tag.
+<p>For example:
+<example>
+<isc:BARCHART bgcolor="white">
+	<isc:ELEMENT height="50" label="2000">
+	<isc:ELEMENT height="100" label="2001">
+</isc:BARCHART>
+</example>
+
+</csr:description>
+
+<!-- define the action to be performed when this rule is encountered. 
+	csr:children means: process all the tags contained by this tag.
+	##( expr )## means: evaluate this expression when the page is compiled.
+-->
+
+<csr:action>
+<table bgcolor="##(..GetAttribute("BGCOLOR"))##" border="0" cellspacing="0"
+ style="border: ##(..GetAttribute("BORDER","solid blue"))##;"><tr>
+<csr:children>
+</tr></table>
+
+</csr:action>
+</csr:rule>
+
+<!-- --------------------------------------------------------------- -->
+<!--
+Define a rule that is fired whenever we encounter an
+isc:element tag within an isc:barchart tag. This tag is empty (has no 
+closing tag).
+-->
+
+<csr:rule name="iscbarchartel" match="isc:BARCHART/*/isc:ELEMENT" empty language="any">
+
+<csr:description>
+Defines an chart element within a bar chart. This tag must be enclosed
+within an isc:barchart tag.
+</csr:description>
+
+<csr:attribute name="height" description="Height of chart element." type="Height:INT">
+<csr:attribute name="width" description="Width of chart element." type="Width:INT">
+<csr:attribute name="imgsrc" description="Name of image file used to fill in element." type="ImageName:STRING">
+<csr:attribute name="label" description="Label for chart element." type="Label:STRING">
+
+<!-- define the action to be performed when this rule is encountered. -->
+
+<csr:action>
+<td valign="bottom">
+<table bgcolor="white" border="0">
+<tr><td valign="bottom" align="center">
+<img src="##(..GetAttribute("IMGSRC","barchartblue.jpg"))##"
+	width="##(..GetAttribute("WIDTH",25))##"
+	height="##(..GetAttribute("HEIGHT",0))##" 
+>
+</td></tr>
+<tr><td align="center">##(..GetAttribute("LABEL"))##</td></tr>
+</table>
+</td>
+</csr:action>
+
+</csr:rule>
+
+
+

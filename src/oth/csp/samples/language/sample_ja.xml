@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<MsgFile Language="ja">
+   <MsgDomain Domain="sample">
+      <Message Id="source">\[X</Message>
+      <Message Id="menu">Tv j[</Message>
+      <Message Id="Language">ú{ê</Message>
+      <Message Id="LangEnglish">Japanese</Message>
+      <Message Id="LangComment">»nÌ¾êÅAy[WÌ\¦ðÀ·é</Message>
+      <Message Id="LangTitle">[JC[[VÌTv</Message>
+      <Message Id="LangDesc">±ÌTvÍACSPy[WðuEUÝèÌ¾êAàµ­ÍIð³ê½¾êÅÌy[W\¦ðÀµÜ·B</Message>
+      <Message Id="LangText1">
+±Ìy[WÍ ç©¶ßA½­Ì¾êÅ|ó³êÄ¢Ü·B
+úóÔÅÍuEUÌÝèÉ í¹½¾êÅy[Wª\¦³êÜ·B</Message>
+      <Message Id="LangText2">
+uEUÝèÈOÌ¾êÅy[Wð\¦·éÉÍAÈº©ç¾êðIðµÄ "¾êðÝè"{^ðNbNµÄ­¾³¢B
+Èã±ÌZbVÅÍIð³ê½¾êÅLq³ê½y[Wª\¦³êÜ·B</Message>
+      <Message Id="LangText3">
+Áè¾êÌXML\[Xt@Cð\¦·éÉÍAÈº©ç¾êðIðµÄ "\[Xð\¦"{^ðNbNµÄ­¾³¢B</Message>
+      <Message Id="LangText4">
+±Ìy[WÌ\[XR[hÍACSPy[Wð[JCY»·éû@ÌTvÉÈèÜ·B
+±ÌTvÍA|óðÇÝÞR[hÌÀàµÜ·B</Message>
+      <Message Id="LangSet">¾êðÝè</Message>
+      <Message Id="LangDisplay">\[Xð\¦</Message>
+   </MsgDomain>
+</MsgFile>

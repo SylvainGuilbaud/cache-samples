@@ -1,0 +1,33 @@
+<!-- Copyright (c) 2003 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="How to use %response.Context">
+
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	Set %response.Context("Name")="Value",%response.Context("AnotherName")="AnotherValue"
+	Quit 1
+</script>
+
+<html>
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Use of %response.Context">
+This is an example of how to use the %response.Context to insert query parameters
+into your document urls and forms automatically. Notice that if you submit the form
+or click the link the inspector page will show 'Name=Value' and 'AnotherName=AnotherValue'
+which are the items entered into the Context array in the OnPreHTTP method.
+</isc:SAMPLE>
+
+<br>
+<form name="Form" action="inspector.csp">
+<input type="text" name="Test">
+<input type="submit" name="SUBMIT" value="Submit">
+</form>
+<br>
+<a href="inspector.csp">Link to inspector page</a>
+<br><br>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+
+<!-- All error pages MUST inherit from %CSP.Error -->
+<csp:class super="%CSP.Error" description="PRIVATE:Demo of how to write an application error page">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Example application error page">
+The sample demonstrates how to write your own application error
+page.
+</isc:SAMPLE>
+
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	Quit 1
+</script>
+
+<!-- The HyperEventError method is called when an error occurs while running -->
+<!-- the hyperevent method. This should generate JavaScript back to the browser -->
+<script language="Cache" method="HyperEventError" arguments="" returntype="">
+	New ErrorInfo,ErrorNumber,message
+	Do ..DecomposeError($get(%request.Data("Error:ErrorCode",1)),.ErrorInfo)
+	Set message="Example HyperEvent Error Alert\n\n"
+	For i=1:1:ErrorInfo {
+		Set message=message_$ZCVT(ErrorInfo(i,"Desc"),"O","JS")_"\n"
+		Set message=message_$ZCVT("    Error: "_ErrorInfo(i,"Error"),"O","JS")_"\n"
+		If ErrorInfo(i,"ErrorNo")'=$$$ERRORCODE($$$CacheError),ErrorInfo(i,"ErrorNo")'=$$$ERRORCODE($$$FailedToCreateClass) Set message=message_$ZCVT("    ErrorNo: "_ErrorInfo(i,"ErrorNo"),"O","JS")_"\n"
+		Set message=message_$ZCVT("    CSP Page: "_ErrorInfo(i,"URL"),"O","JS")_"\n"
+		Set message=message_$ZCVT("    Namespace: "_ErrorInfo(i,"Namespace"),"O","JS")_"\n"
+		Set message=message_$ZCVT("    Class: "_ErrorInfo(i,"Class"),"O","JS")_"\n"
+		If $G(ErrorInfo(i,"Routine"))'="" {
+			Set message=message_$ZCVT("    Routine: "_ErrorInfo(i,"Routine"),"O","JS")_"\n"
+			Set message=message_$ZCVT("    Location: "_ErrorInfo(i,"Location"),"O","JS")_"\n"
+			If $G(ErrorInfo(i,"Line"))'="" Set message=message_$ZCVT("    Line: "_ErrorInfo(i,"Line"),"O","JS")_"\n"
+		}
+		Set message=message_"\n"
+	}
+	Write "alert('",message,"');",!
+
+	; As we are outputting JavaScript we can also do things like redirect the browser depending on the error.
+	; For example if the session timed out, or was ended directly then when the user tries to go to a page
+	; that contains encrypted data in the parameter they will get one of these two errors. If so we could redirect
+	; them to a login page.
+	Set ErrorNumber=$get(%request.Data("Error:ErrorNumber",1))
+	If ErrorNumber=$$$ERRORCODE($$$CSPSessionTimeout)!(ErrorNumber=$$$ERRORCODE($$$InvalidDecrypt)) {
+		;Write "CSPPage.window.location='/csp/samples/lottery.csp'",!
+	}
+</script>
+
+<script language="Cache" runat="server">
+	&html<<p><p>>
+	New ErrorInfo
+	Do ..DecomposeError($get(%request.Data("Error:ErrorCode",1)),.ErrorInfo)
+	Do ..DisplayError(.ErrorInfo)
+	&html<<p><br>>
+	; Call the inspector to display the objects associated with this request.
+	; Note this is done inside the <body></body> tags.
+	Do ##class(%CSP.Utils).DisplayAllObjects()
+</script>
+
+</body>
+</html>

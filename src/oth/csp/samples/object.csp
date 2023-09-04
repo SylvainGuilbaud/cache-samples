@@ -1,0 +1,53 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>CSP:OBJECT</B> tag to display data from an object.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;csp:object&gt; Tag Sample">
+This sample uses the <b>csp:object</b> tag to retrieve values from an object.
+<br>To view data from a different object instance, 
+enter a new Object ID below and press <b>Go</b> (Hint: try a number between 1 and 100).
+</isc:SAMPLE>
+
+<!-- Define reference to a persistent object using the csp:OBJECT tag -->
+<!-- The ID for the object comes from the URL (via the %request object) -->
+<csp:object name="person" classname="Sample.Person" OBJID='#($get(%request.Data("OBJID",1)))#'>
+
+<form name="theForm">
+<table cellspacing="5">
+<tr>
+<td align="right"><b>Object ID:</b></td>
+<td><input type="input" size="8" name="OBJID" value='#(..EscapeHTML($get(%request.Data("OBJID",1))))#'></td>
+<td align="right"></td>
+<td><input type="submit" name="Go" value="Go"></td>
+</tr>
+</table>
+</form>
+
+<hr>
+
+<csp:if condition="'$isobject(person)">
+<I>No object found.</I>
+</csp:if>
+
+<!-- Display properties of the object using CSP expressions -->
+
+<csp:if condition="$isobject(person)">
+<table cellspacing="5">
+<tr>
+<td align="right">Name:</td><td><b>#(..EscapeHTML(person.Name))#</b></td>
+</tr>
+<tr>
+<td align="right">SSN:</td><td><b>#(..EscapeHTML(person.SSN))#</b></td>
+</tr>
+</table>
+</csp:if>
+
+</body>
+</html>

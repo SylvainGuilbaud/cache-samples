@@ -1,0 +1,202 @@
+<!-- Copyright (c) 2003 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using SVG for a piece chart in CSP.">
+<html>
+<head>
+<script language="JavaScript" type="text/javascript">
+
+var SVGNS = "http://www.w3.org/2000/svg";
+
+var svgdoc;
+var ParentGroup1;
+var Values = new Array();
+var Names = new Array();
+var PieElements = new Array();
+var ColorArray = new Array("#000000",
+                             "#3333ff",
+                             "#cc0066",
+                             "#3399CC",
+                             "#cc99ff",
+                             "#ff9999",
+                             "#00cc99",
+                             "#ff33cc",
+                             "#ccff00",
+                             "#33cccc",
+                             "#ccccff");
+var PieChartSize = 80;
+var MoveDistance = 40;
+var CurrentColor = 1;
+var PieTotalSize = 0;
+var BarTotalSize = 0;
+var MaxSize = 0;
+var totalused;
+var totalfree;
+
+
+function init()
+{
+	svgdoc = self.document.getElementById("piechart").getSVGDocument();
+    ParentGroup1 = svgdoc.getElementById("slices");
+
+	var databaselist = #server(..getDatabaselist())#;	
+	var databases = databaselist.split("^");
+	var len = databases.length;
+	var dbmaxsize = databases[0];
+	if (typeof dbmaxsize != "number") dbmaxsize = 0;
+	totalused = 0;
+	for(var i = 1; i < len; i++)
+	{
+		var db = databases[i].split("#");
+		var size = db[1];
+		var dir = db[0];
+		totalused = totalused + Math.round(eval(size));
+		AddChartValue(size, dir, true);
+	}
+	if (dbmaxsize == 0) dbmaxsize = 32767000
+	totalfree = dbmaxsize - totalused
+
+	setTextNode("title_free","Free space: " + (totalfree/1000) + "Gb");
+	setTextNode("title_used","Used space: " + totalused + "Mb");
+
+}
+
+function setTextNode(id,str)
+{
+	var text = svgdoc.getElementById(id);
+	if (!text) {
+		return;
+	}
+	
+	// create next text node and replace the current one
+	var oldNode = text.firstChild;
+	text.removeChild(oldNode);
+
+	var textNode;
+	textNode = svgdoc.createTextNode(str);
+	text.appendChild(textNode);
+}
+
+function AddChartValue(Value, Name, Repress)
+{
+
+ 	Value = Value * 1
+ 	if ((Value <= 0) || (isNaN(Value)))
+             {
+               alert("Negative, textual or null values are not allowed")
+               return;
+             }
+
+           Color = ColorArray[CurrentColor];
+
+           Values[Values.length] = Value * 1
+           Names[Names.length] = svgdoc.createElementNS(SVGNS,"text")
+           PieElements[PieElements.length] = svgdoc.createElementNS(SVGNS,"path")
+
+           PieElements[PieElements.length - 1].setAttribute("style", "stroke:black;fill:" + Color);
+           PieElements[PieElements.length - 1].addEventListener("mouseover",DisplayInfo,false);
+           PieElements[PieElements.length - 1].addEventListener("mouseout",RemoveInfo,false);
+           PieElements[PieElements.length - 1].nameval=Name;
+           PieElements[PieElements.length - 1].sizeval=Value;
+
+           ParentGroup1.appendChild(PieElements[PieElements.length - 1])
+           Names[Names.length - 1].appendChild(svgdoc.createTextNode(Name + ""))
+           Names[Names.length - 1].setAttribute("transform", "rotate(45)")
+
+          CurrentColor++;
+          if (CurrentColor >= ColorArray.length) CurrentColor = 0
+		  Refresh();
+
+}
+
+function DisplayInfo(evt)
+{
+	var pie=evt.target;
+	var Text=pie.nameval;
+	var Value=pie.sizeval + 'Mb';
+
+	setTextNode("title_free",Text);
+	setTextNode("title_used",Value);
+}
+
+function RemoveInfo(evt)
+{
+	setTextNode("title_free","Free space: " + (totalfree/1000) + "Gb");
+	setTextNode("title_used","Used space: " + totalused + "mb");
+}
+
+        
+function Refresh()
+{
+          PieTotalSize = 0
+          MaxSize = 0
+          for (var I = 0; I < Values.length; I++)
+            {
+              PieTotalSize += Values[I]
+
+              if (Values[I] > MaxSize)
+                MaxSize = Values[I]
+            }
+
+          PieStart = 100
+
+          if (PieTotalSize > 0)
+            for (var I = 0; I < Values.length; I++)
+              {
+              //alert('Values[I]=' + Values[I] + ' PieTotalSize=' + PieTotalSize + ' pie element'+I+' : ' + PieElements[I]);
+                PieStart = DrawPieSegment(PieStart, Values[I] / PieTotalSize, PieElements[I], I)
+              }
+}
+
+function DrawPieSegment(Start, Size, Element, ID)
+{
+
+          PathData = "M0,0L"
+          PathData = PathData + PieChartSize * Math.sin(Start * Math.PI * 2) + "," + PieChartSize * Math.cos(Start * Math.PI * 2)
+          if (Size >= .5)
+            PathData = PathData + "A" + PieChartSize + " " + PieChartSize + " 1 1 0 " + PieChartSize * Math.sin((Start + Size) * Math.PI * 2) + "," + PieChartSize * Math.cos((Start + Size) * Math.PI * 2)
+          else
+            PathData = PathData + "A" + PieChartSize + " " + PieChartSize + " 0 0 0 " + PieChartSize * Math.sin((Start + Size) * Math.PI * 2) + "," + PieChartSize * Math.cos((Start + Size) * Math.PI * 2)
+          PathData = PathData + "z"
+          Element.setAttribute("d", PathData)
+          if (Start < 1) Angle = Start + Size / 2
+
+          return Start + Size
+}
+
+</script>
+
+</head>
+<body bgcolor="#CCCCFF" onload="init()">
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Embedded SVG graphic sample">
+This is an example of using SVG to display a pie chart based on data in Cache.
+Move the mouse over the pieces of the pie to see which database they correspond to.<p>
+In order to run this page you will need either Firefox 1.5 or above which has native SVG support 
+or an SVG viewer installed on your browser. One can be found at 
+<a href="http://www.adobe.com/svg/viewer/install/">Adobe</a>.
+</isc:SAMPLE>
+<p>
+
+  <center><embed id="piechart" src="databasepie.svg" width="300" height="300" type="image/svg+xml"
+  pluginspage="http://www.adobe.com/svg/viewer/install/"></center>
+<p>
+</body>
+<script language="Cache" method="getDatabaselist" arguments="" returntype="%String">
+/// Return a list of databases
+ 	new cnt,databaselist,zu,dir,Size,sfn,MaxSize
+ 	set databaselist = ""
+ 	set cnt = 0
+ 	s sfn=-1
+ 	f  {
+ 		s sfn=$zu(49,sfn,1,5) q:+sfn=-1
+ 		s dir=$p(sfn,"^",3)
+ 		s zu=$zu(49,dir),MaxSize=$p(zu,",",6)
+ 		s Size=$p(zu,",",22)*$p(zu,",",2)\1048576
+ 		if cnt > 0 set databaselist = databaselist_"^"_$tr(dir,"\","/")_"#"_Size
+ 		else  set databaselist = MaxSize_"^"_$tr(dir,"\","/")_"#"_Size
+ 	  	set cnt = cnt + 1
+ 	}
+	quit databaselist
+</script>
+
+
+</html>

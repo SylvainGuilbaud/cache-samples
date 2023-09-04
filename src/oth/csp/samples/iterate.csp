@@ -1,0 +1,55 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <b>CSP:WHILE</b> tag to iterate over a collection.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;csp:while&gt; over a Collection Sample">
+This sample uses the <b>csp:while</b> tag to iterate over the FavoriteColors collection for a person.
+<br>To view a person's favorite colors enter an Object ID for the person below
+and press <b>Go</b> (Hint: try a number between 1 and 100).
+</isc:SAMPLE>
+
+<!-- HTML Form to gather user input -->
+<form name="theForm">
+<table cellspacing="5">
+<tr>
+<td align="right"><b>Object ID:</b></td>
+<td><input type="input" size="8" name="OBJID" value='#(..EscapeHTML(%request.Get("OBJID")))#'></td>
+<td align="right"></td>
+<td><input type="submit" name="Go" value="Go"></td>
+</tr>
+</table>
+</form>
+
+<hr>
+<csp:if condition=%request.Get("OBJID")'="">
+	<csp:object name="person" classname="Sample.Person" objid='#(%request.Get("OBJID"))#'>
+	
+	<csp:if condition="person=$$$NULLOREF">
+		<i>No object found.</i><p>
+	</csp:if>
+	
+
+	<!-- Display favorite colors of person -->
+
+	<csp:if condition="person'=$$$NULLOREF">
+		Favorite Colors for #(..EscapeHTML(person.Name))#<br>
+		<ul>
+		<table cellspacing="5">
+			<csp:while collection="person.FavoriteColors" value="color">
+				<li><b>#(..EscapeHTML(color))#</b></li>
+			</csp:while>
+		</table>
+		</ul>
+	</csp:if>
+	<hr>
+</csp:if>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>csp:search</B> tag to create popup search windows for a form.">
+
+<html>
+<head>
+<csp:class encoded="1">
+
+<script language="JavaScript" type="text/javascript">
+// search call backs
+function updatePerson(id)
+{
+	#server(..theFormLoad(id))#;
+	self.document.theForm.btnSearch.disabled = true;
+	return true;
+}
+
+function updateCity(id)
+{
+	#server(..UpdateCity(id))#;
+	return true;
+}
+
+function updateSpouse(id)
+{
+	#server(..theFormSpouseLoad(id))#;
+	return true;
+}
+</script>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;PopForm Sample&gt;">
+This samples uses the <b>&lt;csp:search&gt;</b> tag to create popup
+search windows for a form created using the <b>&lt;csp:object&gt;</b> tag
+along with the <b>cspbind</b> attribute.
+</isc:SAMPLE>
+
+<!-- Use the csp:object tag to define a variable that refers to a persistent object. -->
+<csp:object name="person" classname="Sample.Person" objid='#($get(%request.Data("OBJID",1)))#'>
+
+<csp:search name="searchPop" where="Name,SSN" classname="Sample.Person"
+	options="popup" startvalues="Name,SSN" caption="Search by Name"
+	onselect="updatePerson">
+
+<csp:search name="searchSpouse" where="Name,SSN" classname="Sample.Person"
+	options="popup" startvalues="SpouseName"
+	onselect="updateSpouse">
+
+<csp:search name="searchCity" where="City,State,ZipCode" classname="Sample.USZipCode"
+	options="popup" startvalues="City,State,ZipCode" caption="Select City"
+	onselect="updateCity">
+
+<form name="theForm" cspbind="person">
+
+  <table>
+    <tr>
+      <td>
+        <div align="right"><b>Id:</b></div>
+      </td>
+      <td>
+	<!-- Bind a readonly field to the %Id() method. -->
+        <input type="text" name="Id" cspbind="%Id()" readonly>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Name:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property. Mark it as required.-->
+        <input type="text" name="Name" cspbind="Name" size="25" csprequired>
+      </td>
+      <td>
+        <!-- Button to display a popup search window -->
+        <input type="button" name="btnSearch" value="Search" onclick="searchPop();">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>SSN:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property. -->
+	<!-- Associate a validation method using cspvalid.-->
+        <input type="text" name="SSN" cspbind="SSN" size="12">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Street:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Street property of Home address. -->
+        <input type="text" name="Street" cspbind="Home.Street" size="25">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!-- Popup search window for City that fills in Street, City, State and Zip -->
+        <div align="right"><a href="javascript:searchCity();"><b>City:</b></a></div>
+      </td>
+      <td>
+	<!-- Bind a field to the City property of Home address. -->
+	<!-- Associate a validation method using cspvalid.-->
+        <input type="text" name="City" cspbind="Home.City" size="20">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>State:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the State property of Home address. -->
+        <input type="text" name="State" cspbind="Home.State" size="2">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Zip:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Zip property of Home address. -->
+        <input type="text" name="ZipCode" cspbind="Home.Zip" size="6">
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>
+        <input type="hidden" size="10" name="SpouseID" cspbind="Spouse">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!-- Popup search window for Spouse that fills in Name and SSN -->
+        <div align="right"><a href="javascript:searchSpouse();"><b>Spouse Name:</b></a></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property of Spouse. -->
+        <input type="text" name="SpouseName" cspbind="Spouse.Name" size="25" readonly>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <!-- Popup search window for Spouse that fills in Name and SSN -->
+        <div align="right"><b>Spouse SSN:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property of Spouse. -->
+        <input type="text" name="SpouseSSN" cspbind="Spouse.SSN" size="12" readonly>
+      </td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td align=left>
+	<br>
+	<!-- Create a button that invokes the auto-generated new command() -->
+	<p><input type=button name="BtnClear" value="Clear" onclick="theForm_new();self.document.theForm.btnSearch.disabled = false;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+	<!-- Create a button that invokes the auto-generated save() function for this form. -->
+        <input type="button" name="CSPSAVE" value="Save" onclick="if (theForm_save() == 1) {alert('Saved OK!');};">
+    </tr>
+
+  </table>
+</form>
+
+</body>
+
+<script language="Cache" method="UpdateCity" arguments="id:%String">
+
+	New zip
+	Set zip = ##class(Sample.USZipCode).%OpenId(id)
+
+	If (zip = "") {
+		&javascript< CSPPage.document.theForm.ZipCode.value = ''; >
+		&javascript< CSPPage.document.theForm.City.value = ''; >
+		&javascript< CSPPage.document.theForm.State.value = ''; >
+	}
+	Else {
+		&javascript< CSPPage.document.theForm.ZipCode.value = #(..QuoteJS(zip.ZipCode))#; >
+		&javascript< CSPPage.document.theForm.City.value = #(..QuoteJS(zip.City))#; >
+		&javascript< CSPPage.document.theForm.State.value = #(..QuoteJS(zip.State))#; >
+	}
+
+	Quit
+</script>
+
+</html>

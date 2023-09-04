@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>Cinema Cach&eacute; Show Times</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<csp:class super="%CSP.Page,Cinema.Utils" encoded=0>
+<csp:object name="Film" classname="Cinema.Film" objid=#(%request.Data("FilmID",1))#>
+<csp:query name=Times classname="Cinema.Show" queryname="ShowTimes" p1=#(%request.Data("FilmID",1))#>
+<font color="#0000FF" size="+2"><b>Today's Show Times for <nobr>#(Film.Title)#</nobr></b></font>
+<table cellpadding=5>
+	<tr>
+	<td><b>Time</b></td>
+	<td><b>Theater</b></td>
+
+	<td align="center">&nbsp;</td>
+	</tr>
+<csp:while condition="Times.Next()">
+	<tr>
+	<td>#(Times.Get("StartTime"))#</td>
+	<td>#(Times.Get("TheaterName"))#</td>
+
+	<td align="center">
+		<a href=. onClick="#server(..AddShow(#(Times.GetData(1))#))#;return false;">
+		<img src="Tickets.gif" width="130" height="39" border="0"
+			alt="Click to order tickets for this show"></a>
+	</td>
+	</tr>
+</csp:while>
+</table>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+
+<html>
+
+<head>
+
+<!-- Specify that this page does not expire for one minute -->
+<!-- see the %CSP.Response Expires property for detail of the value this takes -->
+<csp:class expires="60" description="Demo of using <B>CSP:CLASS</B> to set when this page expires.">
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title='&lt;csp:class expires="60"&gt; Tag Sample'>
+This sample uses the <b>csp:class expires="60"</b> tag to set when
+this CSP page will expire on the browser.</isc:SAMPLE>
+
+<br>
+<div align="center">
+<font size="+1" color="black">
+This page will expire in one minute.<br>
+The current time on the server is #(..EscapeHTML($ZDateTime($H,2)))#<br>
+Click on <a href="expires.csp">Expires Page</a> to display this page.<br>
+It should not refresh the time until after one minute.<br>
+<br>
+</font>
+<hr>
+<font color="black">
+<br>
+Note that the behavior of this page is browser-dependant; it may not work on some browsers.<br>
+Reasons why this page may not work include:
+<ul>
+<li>Time differences between the browser and the server,</li>
+<li>The browser may have set its cache option to get the page every time.</li>
+</ul>
+</font>
+</div>
+<p><br>
+
+</body>
+</html>

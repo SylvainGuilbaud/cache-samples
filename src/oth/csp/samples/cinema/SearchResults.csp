@@ -1,0 +1,31 @@
+<html>
+<head>
+<!-- Make page private to protect against SQL fragments in the URL -->
+<csp:class private=1>
+</head>
+<body>
+<font color="#0000FF" size="+2"><b>Search Results</b></font>
+<table>
+<script language="sql" name=FilmList>
+SELECT ID, Description, Length, Rating, Title, Category->CategoryName
+	FROM Cinema.Film
+	WHERE PlayingNow = 1
+	#($SELECT(%request.Data("CategoryList",1) '= "*":" AND Category = " _ %request.Data("CategoryList",1),1:""))#
+	#($SELECT(%request.Data("RatingList",1) '= "*":" AND Rating = '" _ %request.Data("RatingList",1) _ "'",1:""))#
+	ORDER BY Title
+</script>
+<csp:while condition="FilmList.Next()">
+	<tr><td>
+		<font size="+1"><b>#(FilmList.GetDataByName("Title"))#</b></font><br>
+		#(FilmList.GetDataByName("Description"))#<br>
+		<nobr><b>Genre</b> #(FilmList.GetDataByName("CategoryName"))# </nobr> <nobr><b>Length</b>
+		#(FilmList.GetDataByName("Length"))# minutes</nobr> <nobr><b>Rating</b>
+		#(FilmList.GetDataByName("Rating"))#</nobr><br><br>
+	</td>
+
+	<td><a href='ShowTimes.csp?FilmID=#(FilmList.GetDataByName("ID"))#'><img src="ShowTimes.gif" width="130" height="39" border="0" alt="Click to see show times for this film"></a></td>
+	</tr>
+</csp:while>
+</table>
+</body>
+</html>

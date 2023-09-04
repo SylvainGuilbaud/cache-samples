@@ -1,0 +1,102 @@
+<!-- --------------------------------------------------------------- -->
+<!--
+This file contains the rule definitions for a set of custom HTML tags
+that define a standard template for the CSP sample pages.
+-->
+
+<!-- --------------------------------------------------------------- -->
+<!--
+Define a rule that is fired whenever we encounter an isc:sample tag 
+within the body section of a document.
+-->
+
+<csr:rule name="iscsample" match="body/isc:SAMPLE" language="any">
+
+<csr:description>
+Set up default style for sample page. Use this tag within the
+&lt;body&gt; section of the sample page.
+<p>For example:
+<example>
+<head>
+<body>
+<isc:SAMPLE title="Sample Page">
+Description of sample
+</isc:SAMPLE></head>
+
+</body>
+</example>
+
+</csr:description>
+
+<csr:attribute name="title" description="Title of this sample page." type="Title:STRING">
+
+<!-- define the action to be performed when this rule is encountered. 
+Use the csr:section tag to write style sheet to the HEAD section
+of the page.
+-->
+
+<csr:action>
+
+<csr:section name="HEAD">
+
+<script language="Cache" runat="server">
+	// Use sample as the default domain for the CSP sample pages.
+	If %response.Domain="" Set %response.Domain="sample"
+</script>
+<script language="Basic" runat="server">
+	' Use sample as the default domain for the CSP sample pages.
+	If (%response.Domain="") Then
+		%response.Domain="sample"
+	End If
+</script>
+
+<title>#(##($select(%compiler.IsBasic:"me",1:"."))##.EscapeHTML(%response.GetText("","",##(..QuoteAttribute("TEXTID"))##,##(..QuoteAttribute("TITLE"))##)))#</title>
+<style type="text/css">
+	body { color: black; background: #CCCCFF; font-size: 12pt; font-family: Verdana,Arial,Helvetica,sans-serif; }
+	.Small { font-size: 10pt;}
+	.DarkRow { background: #DDDDDD; }
+	.LightRow { background: #FFFFFF; }
+</style>
+</csr:section>
+
+<table bgcolor="#000088" cols="2" width="100%" border="1" cellpadding="3">
+<tr>
+<td width="50%">
+<nobr><font face="Verdana,Arial,Helvetica,sans-serif" color="white" size="+3">
+<b>&nbsp;#(##($select(%compiler.IsBasic:"me",1:"."))##.EscapeHTML(%response.GetText("","",##(..QuoteAttribute("TEXTID"))##,##(..QuoteAttribute("TITLE"))##)))#</b>
+</font></nobr>
+</td>
+</tr>
+</table>
+<br>
+
+<table width="100%">
+<tr>
+<td width="66%"><font face="Verdana,Arial,Helvetica,sans-serif">
+<csr:children>
+</font></td>
+<td align="right"><font face="Verdana,Arial,Helvetica,sans-serif"><a href="#url(menu.csp)#">#(%response.GetText("","","menu","Samples Menu"))#</a></font></td>
+<td align="right"><font face="Verdana,Arial,Helvetica,sans-serif"><a href="#url(showsource.csp?PAGE=#(%request.URL)#)#">#(%response.GetText("","","source","Source"))#</a></font></td>
+</tr>
+</table>
+
+<csr:section name="BODY" block="2">
+<br>
+<a href="http://www.intersystems.com"><img src="created-with-csp.gif" width="88" height="33"></a>
+</csr:section>
+
+</csr:action>
+</csr:rule>
+
+<!-- catch if isc:sample tag is being used in the wrong place -->
+<csr:rule name="iscsampleerror" match="isc:sample" language="any">
+<csr:action>
+<script language="Cache" runat="compiler">
+	// Report a CSP compile error, if isc:sample tag not in body.
+	Set %statuscode=$$$ERROR($$$GeneralError,"The isc:SAMPLE tag must be placed within the BODY section of a document.")
+	Quit
+</script>
+</csr:action>
+</csr:rule>
+
+

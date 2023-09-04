@@ -1,0 +1,172 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of importing XML data.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="XML Import Sample">
+This sample uses the <i>%XML.Reader</i> class to import XML data into
+the XML enabled <i>Sample.Person</i> class.
+<br>Enter XML that represents a <i>Sample.Person</i> instance and press <b>Go</b>.
+<br>
+<br>Data values must be specified in SOAP encoded format.  
+In this example, the DOB field must be in the format yyyy-mm-dd.
+<br>
+<br>The &lt;SSN&gt; data will be used to look for a <i>Sample.Person</i> instance.
+If a matching instance is found, the instance will be updated.  Otherwise,
+a new instance of <i>Sample.Person</i> will be created.
+</isc:SAMPLE>
+
+<!-- CREATE FORM FOR EDITING SQL QUERY -->
+
+<form name="theForm" method="post">
+<table cellspacing="5">
+<tr>
+	<td align="left"><b>XML data:</b><br>
+	<textarea name="xml" rows="22" cols="80">
+<Data>	
+  <Person>
+    <SSN>806-59-6936</SSN>
+    <Name>Nichols,Mark S.</Name>
+    <DOB>1962-04-30</DOB>
+    <FavoriteColors>
+      <FavoriteColorsItem>Yellow</FavoriteColorsItem>
+      <FavoriteColorsItem>Purple</FavoriteColorsItem>
+    </FavoriteColors>
+    <Home>
+      <City>Zanesville</City>
+      <State>MN</State>
+      <Street>638 Clinton Blvd</Street>
+      <Zip>76781</Zip>
+    </Home>
+    <Office>
+      <City>Chicago</City>
+      <State>FL</State>
+      <Street>7788 First Street</Street>
+      <Zip>40958</Zip>
+    </Office>
+  </Person>
+</Data>
+	</textarea></td>
+	<td><input type="submit" name="btnSubmit" value=" Go "></td>
+</tr>
+</table>
+</form>
+
+<!-- Look to see if XML data was submitted. -->
+<csp:if condition='(%request.IsDefined("xml"))'>
+	<script language="JavaScript" type="text/javascript">
+		self.document.theForm.xml.value=#(..QuoteJS($get(%request.Data("xml",1))))#
+	</script>
+	<hr><br>
+	<script language="Cache" runat="server">
+		New count,id,p,person,reader,result,sc,ssn,spouse
+		Set count=0
+
+		// Create an instance of %XML.Reader
+		Set reader = ##class(%XML.Reader).%New()
+
+		// Begin processing of the XML input
+		Set sc=reader.OpenString($get(%request.Data("xml",1)))
+
+		If $$$ISOK(sc) {
+			 // Associate a class name with the XML element name
+			 Do reader.Correlate("Person","Sample.Person")
+
+			 // read Sample.Person objects from xml file
+			 While reader.Next(.person,.sc) {
+				If count=0 {
+					Write "Processing summary:<br><br>",!
+					Write "<table border=""1"" cellpadding=""8"" bgcolor=""#DDDDFF"">",!
+					Write "<tr><th><b>ID</b></th><th><b>SSN</b></th><th><b>Name</b></th><th><b>Result</b></th></tr>",!
+				}
+				Set count=count+1
+				If $$$ISOK(sc) {
+					Do ..UpdatePerson(.person,.result)
+					Write "<tr>",!
+					Write "<td>"_..EscapeHTML(person.%Id())_"</td>",!
+					Write "<td>"_..EscapeHTML(person.SSN)_"</td>",!
+					Write "<td>"_..EscapeHTML(person.Name)_"</td>",!
+					Write "<td>"_result_"</td>",!
+					Write "</tr>",!
+				} Else {
+					Do DecomposeStatus^%apiOBJ(sc,.result)
+					Set result=..EscapeHTML($Get(result(1)))
+					Write "<tr>",!
+					Write "<td>"_..EscapeHTML(person.%Id())_"</td>",!
+					Write "<td>"_..EscapeHTML(person.SSN)_"</td>",!
+					Write "<td>"_..EscapeHTML(person.Name)_"</td>",!
+					Write "<td>"_result_"</td>",!
+					Write "</tr>",!
+				}
+			 }
+
+			 If count=0 {
+				Write "No Sample.Person instances found."
+			 } Else {
+				Write "</table>",!
+			 }
+		} Else {
+			Do ..ShowError(sc)
+		}
+		Write "<p><p>"
+	</script>
+</csp:if>
+
+<script language="Cache" method="UpdatePerson"
+		arguments="&person:Sample.Person,&result:%String">
+	// SSN and Name must be specified.
+	If person.SSN="" {
+		Set result="No SSN"
+	} ElseIf person.Name="" {
+		Set result="No Name"
+
+	} Else {
+		// See if Sample.Person instance already exists
+		Set ssn=person.SSN
+		&sql( SELECT ID INTO :id FROM Sample.Person WHERE SSN=:ssn )
+		If SQLCODE=0 {
+			// Sample.Person exists
+			Set result="Updated"
+			// Open existing person and update with new values.
+			Set p=##class(Sample.Person).%OpenId(id)
+			Set p.SSN=person.SSN
+			Set p.Name=person.Name
+			Set p.DOB=person.DOB
+			Set p.FavoriteColors=person.FavoriteColors
+			Set p.Home=person.Home
+			Set p.Office=person.Office
+			Set p.Spouse=person.Spouse
+			// Need to find existing spouse or create new one.
+			// Return the existing person record
+			Set person=p
+		} Else {
+			// We will create a new person instance
+			Set result="Inserted"
+		}
+
+		// Lookup the person's spouse.
+		If person.Spouse'="" {
+			Set ssn=person.Spouse.SSN
+			&sql( SELECT ID INTO :id FROM Sample.Person WHERE SSN=:ssn )
+			If SQLCODE=0 {
+				Set spouse=##class(Sample.Person).%OpenId(id)
+				Set person.Spouse=spouse
+			}
+		}
+
+		// Save the new or updated person
+		Set sc=person.%Save()
+		If $$$ISERR(sc) {
+			Do DecomposeStatus^%apiOBJ(sc,.result)
+			Set result=..EscapeHTML($Get(result(1)))
+		}
+	}
+</script>
+</body>
+</html>

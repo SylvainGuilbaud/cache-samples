@@ -1,0 +1,50 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils" description="PRIVATE:Menu page of Lottery Example.">
+
+<title>Lottery Menu</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<!-- TEST FOR UNAUTHORIZED ACCESS BY CHECKING SESSION DATA -->
+<csp:if condition='($Get(%session.Data("USERID"))="")'>
+
+<!-- DISPLAY A STANDARD UNAUTHORIZED ACCESS METHOD USING AN INHERITED METHOD. -->
+#(..displayUnauthorized())#
+
+<csp:else>
+<font face="Lucida Sans" color="yellow" size="+3">
+<!-- USERNAME is escaped to not allow user entered HTML to leak into page -->
+<p>Welcome <b>#(..EscapeHTML($Get(%session.Data("USERNAME"))))#</b>, this is visit 
+#($Get(%session.Data("VISITNO")))# to <font color=red>Lottery-o-Matic</font> for you.
+
+<p><font size="+2"><font color="red">Lottery-o-Matic</font> picks winning lottery numbers using a variety of advanced techniques.
+<p align="center">What would you like to do today?</font>
+
+<form name="selectionForm">
+<p align="center"><input type="button" name="Standard" value="Generate a Standard Number" onClick=#call(..gotoMain('STANDARD'))#>
+<p align="center"><input type="button" name="Deluxe" value="Generate a Deluxe Number" onClick=#call(..gotoMain('DELUXE'))#>
+<p align="center"><input type="button" name="History" value="View Your Account History" onClick=self.document.location='#url(lotteryhistory.csp)#';>
+<p align="center"><input type="button" name="Exit" value="Leave Lottery-o-Matic" onClick=self.document.location='#url(lotteryend.csp)#';>
+</form>
+</font>
+</csp:if>
+
+<script language="Cache" method="gotoMain" arguments="type:%String" returntype="%String">
+	; Set type of purchase, jump to next page
+	Set %session.Data("PURCHASE")=type
+	Write "CSPPage.document.location ='"_..Link("lotterymain.csp")_"';",$C(13,10)
+
+	Quit ""
+</script>
+
+</body>
+</html>

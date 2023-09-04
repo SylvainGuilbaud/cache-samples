@@ -1,0 +1,25 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Inspects the contents of the CSP server side objects">
+
+<html>
+
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Inspector Sample">
+If you set the 'Set %response.TraceDump=1' on a page it will call the
+inspector after your page completes, as shown below.
+</isc:SAMPLE>
+<br>
+</body>
+
+<script language="Cache" runat="server">
+	; This causes the server to display all the objects associated with this request
+	; You can include it in your page to help with debugging.
+	Set %response.TraceDump=1
+</script>
+
+</html>
+

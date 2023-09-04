@@ -1,0 +1,47 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Shows a list of currently active CSP rules.">
+
+<html>
+<head>
+
+<script language="Cache" runat="server">
+	// get family name
+	Set family=$get(%request.Data("FAMILY",1),"csp")
+</script>
+
+<!-- EXECUTE QUERY TO GET LIST OF RULES -->
+<csp:query name="query" classname="%CSP.RuleMgr" queryname="RuleList" P1="#(family)#">
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Rule Manager">
+This page displays the CSP rules that are currently in use for <b>#(family)#</b> pages.
+<br>CSP rules specify actions that the CSP compiler should perform when
+compiling a CSP document.
+</isc:SAMPLE>
+
+<hr>
+<table cellpadding="5" border="1" bgcolor="#DDDDFF">
+<tr>
+	<th align="left"><b>Rule</b></th>
+	<th align="left"><b>Description</b></th>
+	<th align="left"><b>Match</b></th>
+	<th align="left">&nbsp;</th>
+</tr>
+
+<!-- LOOP OVER RESULT SET TO DISPLAY LIST OF RULES -->
+<csp:while counter="row" condition="query.Next()">
+	<tr class='#($S(row#2:"DarkRow",1:"LightRow"))#'>
+	<td><a href='_CSP.RuleDoc.cls?RULE=#(..EscapeURL(query.Get("RuleName")))#&FAMILY=#(..EscapeURL(family))#'><nobr><b>#(..EscapeHTML(query.Get("RuleName")))#</b></nobr></a></td>
+	<td class="Small">#(##class(%CSP.RuleDoc).GetDescription(query.Get("Description")))#&nbsp;</td>
+	<td class="Small">#(..EscapeHTML(query.Get("Match")))#&nbsp;</td>
+</tr>
+</csp:while>
+</table>
+
+</body>
+
+</html>

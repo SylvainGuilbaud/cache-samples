@@ -1,0 +1,67 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>SCRIPT LANGUAGE=SQL</B> tag to run an SQL Query.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title='&lt;script language="SQL"&gt; Tag Sample'>
+This sample uses the <b>&lt;script language="SQL"&gt;</b> tag to execute a dynamic SQL query
+against the Cach&eacute; Object Database. The results are displayed in a table
+using the <b>&lt;csp:loop&gt;</b> tag to iterate over the resulting rows and columns.
+<br>To execute a different query, enter it below and press <b>Go</b>.
+</isc:SAMPLE>
+
+<!-- 	Define a ResultSet based on a query
+	In this case we are getting a query at run-time
+	from user input.
+-->
+<script language="SQL" name="query" P1='#($get(%request.Data("P1",1),"A"))#'>
+#(..EscapeHTML($get(%request.Data("QUERY",1),"SELECT Name FROM Sample.Person")))#
+</script>
+
+<!-- CREATE FORM FOR EDITING SQL QUERY -->
+
+<form name="theForm">
+<table cellspacing="5">
+<tr>
+	<td align="left"><b>SQL Query:</b>
+	<br><textarea name="QUERY" rows="4" cols="80">#(..EscapeHTML($get(%request.Data("QUERY",1),"SELECT Name FROM Sample.Person")))#</textarea></td>
+	<td><input type="submit" name="btnSubmit" value=" Go "></td>
+</tr>
+</table>
+</form>
+
+<hr>
+
+<!-- CREATE A TABLE TO DISPLAY THE RESULTS -->
+
+<table border="1" bgcolor="#DDDDFF">
+<tr>
+
+	<!-- LOOP OVER COLUMNS TO CREATE COLUMN HEADERS -->
+	<csp:while counter="col" condition="(col<query.GetColumnCount())">
+	<th align="left"><b>#(..EscapeHTML(query.GetColumnName(col)))#</b></th>
+	</csp:while>
+</tr>
+
+<!-- NOW LOOP OVER ALL ROWS IN THE RESULT SET -->
+<csp:while counter="row" condition="query.Next()">
+
+<!-- USE ALTERNATING STYLES FOR ROW FOR ZEBRA EFFECT (# is modulo operator) -->
+<tr class="#($S(row#2:"DarkRow",1:"LightRow"))#">
+
+	<!-- LOOP OVER COLUMNS TO SHOW DATA -->
+	<csp:while counter="col" condition="(col<query.GetColumnCount())">
+	<td>#(..EscapeHTML(query.GetData(col)))#</td>
+	</csp:while>
+</tr>
+</csp:while>
+</table>
+
+</body>
+</html>

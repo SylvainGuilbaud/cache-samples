@@ -1,0 +1,16 @@
+<html>
+<head>
+<title>Cach&eacute; Cinema</title>
+</head>
+
+<frameset rows="100,1*" cols="*" frameborder="NO" framespacing="3">
+	<frame src="Search.csp" name="Top" scrolling="NO" frameborder="NO">
+	<frameset cols="285,1*" frameborder="NO" framespacing="3">
+		<frame name="Order" src="Order.csp" frameborder="NO">
+		<frame name="Main" src="TopPicks.csp" frameborder="NO">
+	</frameset>
+</frameset>
+<noframes><body bgcolor="#FFFFFF">
+
+</body></noframes>
+</html>

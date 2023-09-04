@@ -1,0 +1,61 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of a protected page:  PRIVATE and ENCODED.">
+
+<html>
+<head>
+
+<!-- Specify that this page is PRIVATE and parameters are ENCODED-->
+<csp:class private="1" encoded="1">
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Protected Page Sample">
+This page displays account balance information that is passed using a query parameter.
+Protected.csp is protected by both being private and having encoded query parameters.
+You cannot request it directly via a URL or modify its parameters directly
+in the URL, instead it is only accessible from a link from another CSP page.
+</isc:SAMPLE>
+
+<hr>
+
+<font size="+2">
+
+<br>
+
+<csp:if condition='$get(%request.Data("BALANCE",1))=""'>
+  To see BALANCE call from ProtectedEntry.csp
+
+<csp:else>
+
+  <script language="Cache" runat="server">
+     New hacked,num,I
+     Set hacked=0
+     set num=%request.Count("BALANCE")
+     for i=1:1:num if '%request.IsEncrypted("BALANCE",i) set hacked=1
+  </script>
+
+  <csp:if condition="'hacked">
+	<!-- BALANCE is escaped to not allow user entered HTML to leak into page -->
+    Your Account Balance is: #(..EscapeHTML($get(%request.Data("BALANCE",1))))#
+
+  <csp:else>
+    <marquee>HACKER ALERT!</marquee>
+    <br><br>The user has tried to modify the BALANCE in the URL.
+
+  </csp:if>
+
+  <br><br>
+  </font>
+  <font size="+1">
+  <a href="protectedentry.csp">Back</a>
+
+</csp:if>
+<p>&nbsp;<p>
+</font>
+</body>
+
+
+</html>

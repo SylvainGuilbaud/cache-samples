@@ -1,0 +1,54 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of serving a stream with the <b>%CSP.StreamServer</b>.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Serving a stream">
+This sample uses the <b>%CSP.StreamServer</b> class to server up a stream
+that is stored in Cach&eacute;, for the example we use the ClassLogo.jpg
+from this sample directory, but this can be a file stream, global stream
+or any other type of stream.
+</isc:SAMPLE>
+
+<script language="Cache" runat="server">
+	// This code is just to get the oref of a stream. Normally you would have
+	// one as a property of the object you are interested in, however for this
+	// example I will create a stream that points to the ClassLogo.jpg file
+	// that is in the csp/samples directory, but normally you would do something
+	// like 'Set oref=##class(YourClass).%OpenId(id),stream=oref.Stream' to get
+	// the oref.
+	Set stream=##class(%FileBinaryStream).%New()
+	//
+	// The stream we wish to link to for this example is in the samples directory
+	Set filename=$$GetFilename^%apiCSP("/csp/samples/ClassLogo.jpg")
+	Do stream.LinkToFile(filename)
+	
+	// If you want to set the ContentType to serve this stream use
+	Do stream.SetAttribute("ContentType","image/jpeg")
+	
+	// If you want to allow this file to be cached (sometimes a good idea with IE
+	// due to a bug where if you server up a Word document for example without
+	// allowing IE to cache this then IE 'loses' the document before it passes
+	// it to Word, allowing a small expiration solves this).
+	Do stream.SetAttribute("Expires",600)
+	
+	// Now get the id of the stream which is the piece we really want
+	Set oid=stream.%Oid()
+</script>
+
+<p align="center">
+
+<!-- The trick is the use the encrypted oid of the stream as the STREAMOID parameter to the stream server -->
+<image src="%25CSP.StreamServer.cls?STREAMOID=#(..Encrypt(oid))#">
+
+</p>
+<br>
+
+</body>
+</html>

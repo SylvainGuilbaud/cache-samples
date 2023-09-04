@@ -1,0 +1,124 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <b>CSP:OBJECT</b> tag to create a form.">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;Form Sample&gt;">
+This sample uses the <b>&lt;csp:object&gt;</b> tag along with the
+<b>cspbind</b> attribute to create a form that is
+bound to a persistent object in the <i>Cach&eacute; Database</i>.
+</isc:SAMPLE>
+
+<!-- Use the csp:object tag to define a variable that refers to a persistent object. -->
+<csp:object name="person" classname="Sample.Person" objid='#($get(%request.Data("OBJID",1)))#'>
+
+<!-- Use the csp:search tag to define a javascript function that invokes a search page. -->
+<csp:search name="theForm_search" options="sortbox,predicates,showcount" classname="Sample.Person" where="Name,SSN,Spouse->Name" select="Name,SSN,DOB,Spouse->Name Spouse">
+
+<!-- Use the cspbind attribute to bind this form to the object. -->
+<!-- Define an action URL so that the submit button will work. -->
+
+<form name="theForm" cspbind="person" action="formsubmit.csp">
+
+<!-- bind the various object attributes to the form using the CSPBIND attribute. -->
+
+  <table>
+    <tr>
+      <td>
+        <div align="right"><b>Id:</b></div>
+      </td>
+      <td>
+	<!-- Bind a readonly field to the %Id() method. -->
+        <input type="text" name="Id" cspbind="%Id()" readonly>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Name:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property. Mark it as required.-->
+        <input type="text" name="Name" cspbind="Name" size=25 csprequired>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>SSN:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the Name property. -->
+	<!-- Associate a validation method using cspvalid.-->
+        <input type="text" name="SSN" cspbind="SSN" size="12" cspvalid="#server(..IsSSNValid('theForm','SSN',self.document.theForm.SSN.value))#;">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Date of Birth:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the DOB property. Mark it as required.-->
+       <input type="text" name="DOB" cspbind="DOB" size="12" csprequired>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Age:</b></div>
+      </td>
+      <td>
+	<!-- Bind a field to the calculated Age property. Mark it as readonly.-->
+        <input type="text" name="Age" cspbind="Age" readonly>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div align="right"><b>Spouse:</b></div>
+      </td>
+      <td>
+	<!-- Bind a combobox to spouse using a query .-->
+        <select name="Spouse" cspbind="Spouse" classname="Sample.Person" query="ByName" field="ID,Name" separator=" -- "></select>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td align="left">
+	<br>
+	<!-- Create a button that invokes the auto-generated new command() -->
+	<p><input type="button" name="CSPNEW" value="New" onclick="theForm_new()">&nbsp;<i>Create a NEW object</i>
+
+	<!-- Create a button that invokes the auto-generated save() function for this form. -->
+        <p><input type="button" name="CSPSAVE" value="Save" onclick="if (theForm_save() == 1) {alert('Saved OK!');};"> &nbsp;<i>SAVE this object using hyper-event</i>
+
+	<!-- Create a button that invokes the auto-generated search() function for this form. -->
+        <p><input type="button" name="CSPSEARCH" value="Search" onclick="theForm_search();"> &nbsp;<i>SEARCH for an object using the search page</i>
+
+	<!-- Create a submit button to save the "traditional" way -->
+        <p><input type="submit" name="SUBMIT" value="Submit">&nbsp;<i>SUBMIT this form to the server</i>
+    </tr>
+  </table>
+</form>
+</body>
+
+<!-- Define a server side method that validates the SSN number for this person -->
+<script language="Cache" method="IsSSNValid" arguments="form:%String,field:%String,value:%String" returntype="%String">
+
+	// if ok return "", else return error message
+	// test for valid SSN using pattern match
+
+	If $G(value)?3N1"-"2N1"-"4N QUIT "" // valid
+
+	// execute client-side script to reset the value of the client control
+	If $D(form),$D(field) {
+		&js<CSPPage.document.#(form)#.#(field)#.value = 'error';>
+	}
+
+	// return error message to client
+	Quit $G(field)_" must contain a valid social security number in the form ###-##-####."
+
+</script>
+
+</html>
+

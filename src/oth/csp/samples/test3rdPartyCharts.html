@@ -1,0 +1,255 @@
+<html>
+<!--
+	The d3 sortable bar chart example is taken from: http://bl.ocks.org/mbostock/3885705 and is purely intended as an example of incorporating DeepSee data into a dynamic chart of the sort that can be created with d3. No authorship of
+	the chart example is implied.
+-->
+<head>
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  position: relative;
+  width: 100%;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+  fill-opacity: .9;
+}
+
+.x.axis path {
+  display: none;
+}
+
+label {
+  position: relative;
+  /*top: 10px;
+  right: 10px;*/
+}
+
+</style>
+<script src="amcharts/amcharts.js" type="text/javascript"></script>
+<script src="amcharts/serial.js" type="text/javascript"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="zenCSLM.js" type="text/javascript"></script>
+<script src="DeepSee.js" type="text/javascript"></script>
+<script type="text/javascript">
+function initializePage() {
+	var username = document.getElementById('username').value;
+	if (username == '') { username="_system"; document.getElementById('username').value="_system";}
+	var password = document.getElementById('password').value;
+	if (password == '') { password="SYS"; document.getElementById('password').value="SYS";}
+	var application = document.getElementById('application').value;
+	if (application == '') { application="/api/deepsee/v1"; document.getElementById('application').value="/api/deepsee/v1";}
+	var namespace = document.getElementById('namespace').value;
+	if (namespace == '') { namespace="SAMPLES"; document.getElementById('namespace').value="SAMPLES";}
+	var host = 'http://' + window.location.host;
+	var query = document.getElementById("text").value;
+	var host = 'http://' + window.location.host;
+	var connection = new DeepSeeConnection(username,password,host,application,namespace);
+	var resultSet = new DeepSeeResultSet(connection,'widget1');
+	resultSet.runMDXQuery(query,drawChart);
+}
+
+function drawChart(resultSet) {
+
+	var chartType = document.getElementById('chartType').value;
+	
+	if (chartType!='D3SortableBarChart' && !(document.getElementById('chartdiv'))) {
+		var chartdiv = document.createElement('div');
+		//chartdiv.style = "width: 800px; height: 640px;";
+		chartdiv.style.width = '800px';
+		chartdiv.style.height = '640px';
+		chartdiv.id = "chartdiv";
+		document.body.appendChild(chartdiv);
+	}
+	
+	if (document.getElementById('sortCheckbox')) document.getElementById('sortCheckbox').style.visibility = 'hidden';
+	if (document.getElementById('chartdiv')) document.getElementById('chartdiv').style.visibility = 'visible';
+	//d3.selectAll("svg > *").remove();
+	d3.select("svg") .remove();
+
+	var chartDataPoint;
+	var chartLabel;
+	var chartData = [];
+	
+	for (var i = 1; i <= resultSet.getRowCount(); ++i) {
+		for (var j = 1; j <= resultSet.getColumnCount(); ++j) {
+			chartDataPoint = resultSet.getOrdinalValue(i,j);
+			chartLabel = resultSet.getOrdinalLabel(2,i);
+			chartData[chartData.length] = { "country":chartLabel[0],"revenue":chartDataPoint};
+		}
+	}
+	
+	if (chartType=='D3SortableBarChart') {
+	
+		var chartdiv = document.getElementById("chartdiv");
+		if (chartdiv) { chartdiv.remove(); }
+	
+		document.getElementById('sortCheckbox').style.visibility = 'visible';
+		//document.getElementById('chartdiv').style.visibility = 'hidden';
+	
+		var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		width = 960 - margin.left - margin.right,
+		height = 500 - margin.top - margin.bottom;
+		
+		var formatPercent = d3.format(".0%");
+
+		var x = d3.scale.ordinal()
+			.rangeRoundBands([0, width], .1, 1);
+
+		var y = d3.scale.linear()
+			.range([height, 0]);
+
+		var xAxis = d3.svg.axis()
+			.scale(x)
+			.orient("bottom");
+
+		var yAxis = d3.svg.axis()
+			.scale(y)
+			.orient("left");
+
+		var svg = d3.select("body").append("svg")
+			.attr("width", width + margin.left + margin.right)
+			.attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		var data = chartData;
+
+		x.domain(data.map(function(d) { return d.country; }));
+		y.domain([0, d3.max(data, function(d) { return d.revenue; })]);
+
+		svg.append("g")
+		  .attr("class", "x axis")
+		  .attr("transform", "translate(0," + height + ")")
+		  .call(xAxis);
+
+		svg.append("g")
+		  .attr("class", "y axis")
+		  .call(yAxis)
+		.append("text")
+		  .attr("transform", "rotate(-90)")
+		  .attr("y", 6)
+		  .attr("dy", ".71em")
+		  .style("text-anchor", "end")
+		  .text("revenue");
+
+		svg.selectAll(".bar")
+		  .data(data)
+		.enter().append("rect")
+		  .attr("class", "bar")
+		  .attr("x", function(d) { return x(d.country); })
+		  .attr("width", x.rangeBand())
+		  .attr("y", function(d) { return y(d.revenue); })
+		  .attr("height", function(d) { return height - y(d.revenue); });
+
+		d3.select("#sort").on("change", change);
+		
+		var sortTimeout = setTimeout(function() {
+		d3.select("#sort").property("checked", true).each(change);
+		}, 2000);	
+		
+		function change() {
+
+		clearTimeout(sortTimeout);
+
+		// Copy-on-write since tweens are evaluated after a delay.
+		var x0 = x.domain(data.sort(this.checked
+			? function(a, b) { return b.revenue - a.revenue; }
+			: function(a, b) { return d3.ascending(a.country, b.country); })
+			.map(function(d) { return d.country; }))
+			.copy();
+
+		svg.selectAll(".bar")
+			.sort(function(a, b) { return x0(a.country) - x0(b.country); });
+
+		var transition = svg.transition().duration(750),
+			delay = function(d, i) { return i * 50; };
+
+		transition.selectAll(".bar")
+			.delay(delay)
+			.attr("x", function(d) { return x0(d.country); });
+
+		transition.select(".x.axis")
+			.call(xAxis)
+		  .selectAll("g")
+			.delay(delay);
+		}
+		
+		return;
+	}
+	
+	if (typeof AmCharts=="undefined")  { 
+		alert('Please download amCharts JavaScript Charts (http://www.amcharts.com/download/) and place the "amcharts" directory in /csp/broker/  ');
+		return;
+	}
+	
+	var chart = new AmCharts.AmSerialChart();
+	chart.dataProvider = chartData;
+	chart.categoryField = "country";
+	
+	var graph = new AmCharts.AmGraph();
+	graph.valueField = "revenue";
+	graph.type = "column";
+	
+	if (chartType=='3DBarChart') {
+		chart.angle = 30;
+		chart.depth3D = 15;
+		graph.fillAlphas = 0.8;
+		graph.balloonText = "[[category]]: <b>[[value]]</b>";
+	}
+	else if (chartType=='LineChart') {
+		graph.type = "line";
+		graph.fillAlphas = 0.5;
+	}
+	else if (chartType=='LineChartWithMarkers') {
+		graph.type = "line";
+		graph.fillAlphas = 0; // or delete this line, as 0 is default
+		graph.bullet = "round";
+		graph.lineColor = "#8d1cc6";
+	}
+	chart.addGraph(graph);
+	chart.write('chartdiv');
+}
+</script>
+<h1 align="center">Test Page -- Using DeepSee with 3rd Party Charts</h1>
+<br />
+</head>
+
+<body onload="initializePage()" width="100%">
+<div id="maindiv" width = "100%">
+<form width="100%">
+Username: <input type="text" name="username" id="username">    Password: <input type="password" name="password" id="password">    Application: <input type="text" name="application" id="application">   Namespace: <input type="text" name="namespace" id="namespace"><br>
+</form>
+<textarea id="text" rows="4" cols="50">
+select outlet.country.members on 1, [Measures].[Amount Sold] on 0 from holefoods
+</textarea>
+<select id="chartType" onchange="initializePage()">
+  <option value="BarChart">Bar Chart</option>
+  <option value="3DBarChart">3D Bar Chart</option>
+  <option value="LineChart">Line Chart</option>
+  <option value="LineChartWithMarkers">Line Chart With Markers</option>
+  <option value="D3SortableBarChart">D3 Sortable Bar Chart</option>
+</select>
+<button onclick="initializePage()">
+Run
+</button>
+<br />
+<label id="sortCheckbox"><input id="sort" type="checkbox"> Sort values</label>
+</div>
+</body>
+</html>
+
+

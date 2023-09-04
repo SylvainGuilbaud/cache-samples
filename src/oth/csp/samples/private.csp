@@ -1,0 +1,25 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of a PRIVATE page.">
+
+<html>
+<head>
+
+<!-- Specify that this page is PRIVATE -->
+<csp:class private="1">
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Private Page Sample">
+This is an example of a PRIVATE page. You cannot request it directly via a
+URL, instead it is only accessible from a link from another CSP page within
+the same session.
+</isc:SAMPLE>
+
+<br>
+<div align="center"><font size="+3" color="blue">This is a PRIVATE page.</font></div>
+
+</body>
+</html>

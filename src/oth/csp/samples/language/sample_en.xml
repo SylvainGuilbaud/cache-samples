@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MsgFile Language="en">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Source</Message>
+      <Message Id="menu">Samples Menu</Message>
+      <Message Id="Language">English</Message>
+      <Message Id="LangEnglish">English</Message>
+      <Message Id="LangComment">Demo of displaying a page in the local language</Message>
+      <Message Id="LangTitle">Language Localization Example</Message>
+      <Message Id="LangDesc">This sample demonstrates how to display a CSP page using either
+the browser's preferred language or a selected language.</Message>
+      <Message Id="LangText1">
+This page has been translated into a number of languages.
+It initially appears in the preferred of these languages, as
+specified by your browser settings.</Message>
+      <Message Id="LangText2">
+To display this page in a language other than the preferred language,
+select the language below and click the "Set Language" button.
+All subsequent localized pages in this session will be displayed using
+the selected language.</Message>
+      <Message Id="LangText3">
+To display the XML resource file containing a particular translation,
+select the language below and click the "Display Resource" button.</Message>
+      <Message Id="LangText4">
+The source code of this page serves as an example of how to perform localization.
+This sample also demonstrates the code that loads the translations.</Message>
+      <Message Id="LangSet">Set Language</Message>
+      <Message Id="LangDisplay">Display Resource</Message>
+   </MsgDomain>
+</MsgFile>

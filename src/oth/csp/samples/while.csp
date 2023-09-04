@@ -1,0 +1,70 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>CSP:WHILE</B> tag to create a loop.">
+
+<html>
+
+<head>
+
+<!-- Client JavaScript to validate the values entered by the user -->
+<script language="JavaScript" type="text/javascript">
+function validateForm()
+{
+	var el;
+	var val;
+
+	// count
+	var el = self.document.theForm.COUNT;
+	var val = parseInt(el.value);
+
+	if (isNaN(val) || (0 > val)) {
+		alert('Please enter a valid, positive integer for COUNT.');
+		return false;
+	}
+	else {
+		el.value = val;
+	}
+
+	return true;
+}
+
+</script>
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;csp:while&gt; Tag Sample">
+This sample uses the <b>csp:while</b> tag to repeat of section of HTML.
+<br>To change the loop enter a value below and press <b>Go</b>.
+</isc:SAMPLE>
+
+<!-- HTML Form to gather user input -->
+<form name="theForm" onsubmit="return validateForm();">
+<table cellspacing="5">
+<tr>
+	<td align="right"><b>COUNT:</b></td>
+	<td><input type="text" size="5" name="COUNT" value='#(..EscapeHTML($get(%request.Data("COUNT",1),1)))#'></td>
+	<td><i>Number of times to execute the loop.</i></td>
+</tr>
+<tr>
+	<td align="right"></td>
+	<td><input type="submit" name="btnSubmit" value="Go"></td>
+</tr>
+</table>
+</form>
+
+<hr>
+<ul>
+
+<!-- Here is the actual example: loop using values specified within the request -->
+
+<csp:while counter="item" condition='item<$get(%request.Data("COUNT",1),1)'>
+<LI>This is item <b>#(..EscapeHTML(item))#</b>.
+</csp:while>
+
+</ul>
+<hr>
+
+</body>
+</html>

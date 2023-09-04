@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2002 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Invokes a sample Web Service.">
+
+<html>
+<head></head>
+<body>
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	// Redirect to the sample Web Service class.
+	Set %response.Redirect="SOAP.Demo.cls"
+	Quit 1
+</script>
+</body>
+</html>

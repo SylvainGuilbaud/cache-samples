@@ -1,0 +1,17 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Use <b>%response.ServerSideRedirect</b> property to redirect the page on the server.">
+
+<html>
+<head></head>
+<body>
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	; This will redirect on the server to the page specified in the parameter 'redirect' or 'menu.csp'
+	; if none is specified. This does not involve a round trip to the browser unlike the redirect.csp
+	; example, and so it is significantly faster.
+	; One significant difference is the browser will have the name of the 'serversideredirect.csp'
+	; in its title rather than the name of the redirected page.
+	Set %response.ServerSideRedirect=$get(%request.Data("redirect",1),"menu.csp")
+	Quit 1
+</script>
+</body>
+</html>

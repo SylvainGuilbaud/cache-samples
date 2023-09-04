@@ -1,0 +1,90 @@
+<%@ page language="Basic" %>
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using the Basic language for a CSP page.">
+
+<html>
+
+<head>
+
+<!-- Client JavaScript to validate the values entered by the user -->
+<script language="JavaScript" type="text/javascript">
+function validateForm()
+{
+	var val;
+
+	// count
+	var el = self.document.theForm.COUNT.value;
+	if (el == '') return true;
+	
+	var val = parseInt(el);
+
+	if (isNaN(val) || (0 > val)) {
+		alert('Please enter a valid, positive integer for COUNT.');
+		return false;
+	}
+	else {
+		el.value = val;
+	}
+
+	return true;
+}
+
+</script>
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP in Basic Sample">
+This sample demonstrates a CSP page written in Basic.<br>
+A user selected number of random integers between 1 and 100 is generated and displayed.
+<br>To change how many random integers to generate enter a value below and press <b>Go</b>.  
+If blank or 0 is entered a random number of random integers will be displayed.
+</isc:SAMPLE>
+
+<!-- HTML Form to gather user input -->
+<form name="theForm" onsubmit="return validateForm();">
+<table cellspacing="5">
+<tr>
+   <td align="right"><b>COUNT:</b></td>
+   <td><input type="text" size="5" name="COUNT" value='#(me.EscapeHTML(%request.Get("COUNT")))#'></td>
+   <td><i>Number of random integers to generate.</i></td>
+</tr>
+<tr>
+   <td align="right"></td>
+   <td><input type="submit" name="btnSubmit" value="Go"></td>
+</tr>
+</table>
+</form>
+
+<csp:if condition='%request.Get("btnSubmit")="Go"'>
+   <script language="Basic" runat="server">
+      ' Initialize random number generator
+      Randomize
+      ' Get the number of random integers to generate.
+      count = +%request.Get("COUNT",0)
+      If (count = "") Then count = 0
+      If (count = 0) Then count=me.GetRandom()
+   </script>
+
+   <!-- Display the random numbers in a table -->
+
+   <table border="1" bgcolor="#DDDDFF" cellpadding="3">
+
+   <csp:while counter="item" condition="item<count">
+
+      <tr class='#(case((item Mod 2),0:"DarkRow",:"LightRow"))#'>
+         <td align="right" width="30">#(me.EscapeHTML(item))#</td>
+         <td align="right" width="60">#(me.GetRandom())#</td>
+      </tr>
+   </csp:while>
+   </table>
+</csp:if>
+
+</body>
+<script language="Basic" method="GetRandom" arguments="max:%Integer=100" returntype="%Integer">
+   ' Return a random integer from 1 to max
+   Return Int(1 + max*Rnd())
+</script>
+</html>

@@ -1,0 +1,62 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="PRIVATE:Sample SUBMIT handler for form.csp page.">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;Form Submit Sample&gt;">
+This sample processes a submit request sent by the <a href=form.csp>form.csp</a>
+sample page.
+</isc:SAMPLE>
+
+<!-- If this is a submit, then the submit button will be defined -->
+<csp:if condition='%request.IsDefined("SUBMIT")'>
+
+<script language="Cache" runat="server">
+	// handle submit of form!
+	New ok,errmsg
+	Set ok = 0
+	Set errmsg = ""
+
+	// invoke save code on form page
+	Set ok = ##class(csp.form).theFormSubmit(.errmsg)
+</script>
+
+<br>
+<csp:if condition="ok">
+
+<div><font size="+2">The form was saved successfully!</font></div>
+
+<csp:else>
+
+<div><font color="red" size="+2">The form was not saved due to the following errors:</font></div>
+
+<!-- Display the errors; they are in a string separated by \n characters -->
+
+<ul>
+<script language=CACHE runat=server>
+
+	For i = 1:1:$L(errmsg,"\n") {
+		If ($P(errmsg,"\n",i) '= "") {
+			Write "<li>",..EscapeHTML($P(errmsg,"\n",i)),"</li>"
+		}
+	}
+
+</script>
+</ul>
+
+</csp:if>
+
+<csp:else>
+<br>
+<div align="center"><font size="+2">
+Please access this page using the <b>Submit</b> button on the
+<a href="form.csp">form.csp</a> page.
+</font></div>
+</csp:if>
+
+</body>
+</html>

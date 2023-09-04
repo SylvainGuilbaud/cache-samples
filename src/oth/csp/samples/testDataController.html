@@ -1,0 +1,273 @@
+<head>
+<script src="zenCSLM.js" type="text/javascript"></script>
+<script src="DeepSee.js" type="text/javascript"></script>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootswatch/3.2.0/sandstone/bootstrap.min.css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<script type="text/javascript">
+	// + setup
+	function initializePage() {
+		var query = document.getElementById("text").value;
+		var username = document.getElementById('username').value;
+		if (username == '') { username="_system"; document.getElementById('username').value="_system";}
+		var password = document.getElementById('password').value;
+		if (password == '') { password="SYS"; document.getElementById('password').value="SYS";}
+		var application = document.getElementById('application').value;
+		if (application == '') { application="/api/deepsee/v1"; document.getElementById('application').value="/api/deepsee/v1";}
+		var namespace = document.getElementById('namespace').value;
+		if (namespace == '') { namespace="SAMPLES"; document.getElementById('namespace').value="SAMPLES";}
+		
+		
+		
+		var configuration = {};
+		configuration.widget = 'widget1';
+		configuration.type = 'MDX';
+		configuration.initialMDX = query;
+		configuration.pivotName = '';
+		configuration.showTotals = false;
+		var host = 'http://' + window.location.host;
+		configuration.connection = new DeepSeeConnection(username,password,host,application,namespace);
+		dc = new DeepSeeDataController(configuration,drawChart);
+		dc.runQuery();
+	}
+	
+	function loadFilterDropdown(data) {
+		var filterDropdown = document.getElementById('filterDropdown');
+		for (var option in filterDropdown){
+			filterDropdown.remove(option);
+		}
+		var data = DeepSeeUtils.getResultsAsArray(data);
+		for (var i = 0; i < data.length; ++ i) {
+			filterDropdown.options[filterDropdown.options.length] = new Option(data[i].caption,data[i].value);
+		}
+	}
+	
+	function loadMemberDropdown() {
+		var filterDropdown = document.getElementById('filterDropdown');
+		var dimension = filterDropdown.options[filterDropdown.selectedIndex].value;
+		DeepSeeUtils.getMembersForFilter(dc.connection,filterCubeName,dimension,drawMemberDropdown);
+	}
+	
+	function drawMemberDropdown(data) {
+		//clear existing
+		var memberDropdown = document.getElementById('memberDropdown');
+		for (var option in memberDropdown){
+			memberDropdown.remove(option);
+		}
+		var data = DeepSeeUtils.getResultsAsArray(data);
+		for (var i = 0; i < data.length; ++ i) {
+			memberDropdown.options[memberDropdown.options.length] = new Option(data[i].text,data[i].value);
+		}
+	}
+	
+	function loadListingDropdown(data) {
+		var listingDropdown = document.getElementById('listingDropdown');
+		for (var option in listingDropdown){
+			listingDropdown.remove(option);
+		}
+		var data = DeepSeeUtils.getResultsAsArray(data);
+		// start with default
+		listingDropdown.options[listingDropdown.options.length] = new Option('','');
+		for (var i = 0; i < data.length; ++ i) {
+			listingDropdown.options[listingDropdown.options.length] = new Option(data[i].name,data[i].name);
+		}
+	}
+	// - setup
+	
+	// + actions
+	function applyFilter() {
+		var filterInfo = {};
+		filterInfo.filterName = filterDropdown.options[filterDropdown.selectedIndex].text;
+		filterInfo.filterSpec = filterDropdown.options[filterDropdown.selectedIndex].value + '.' + memberDropdown.options[memberDropdown.selectedIndex].value;
+		document.getElementById("currentMethodCall").innerHTML = 'CURRENT FUNCTION CALL: dataController.applyFilter('+filterInfo+')';
+		dc.applyFilter(filterInfo);
+	}
+	
+	function sortData() {
+		var sortAxis = document.getElementById("sortAxis").value;
+		var sortPosition = document.getElementById("sortPosition").value;
+		var sortDirection = document.getElementById("sortDirection").value;
+		var sortTypeDropdown = document.getElementById("sortType");
+		var sortType = sortTypeDropdown.options[sortTypeDropdown.selectedIndex].value;
+		document.getElementById("currentMethodCall").innerHTML = 'CURRENT FUNCTION CALL: dataController.sortData('+sortAxis
+		+','+sortPosition+','+sortDirection+','+sortType+')';
+		dc.sortResults(sortAxis,sortPosition,sortDirection,sortType);
+	}
+	
+	function drillDown() {
+		var drillAxis = document.getElementById("drillAxis").value;
+		var drillPosition = document.getElementById("drillPosition").value;
+		document.getElementById("currentMethodCall").innerHTML = 'CURRENT FUNCTION CALL: dataController.runDrillDown('+drillAxis+','+drillPosition+')';
+		dc.runDrillDown(drillAxis,drillPosition);
+	}
+	
+	function runListing() {
+		var startRow = document.getElementById("startRow").value;
+		var startCol = document.getElementById("startCol").value;
+		var endRow = document.getElementById("endRow").value;
+		var endCol = document.getElementById("endCol").value;
+		var listingDropdown = document.getElementById("listingDropdown");
+		var listingName = listingDropdown.options[listingDropdown.selectedIndex].text;
+		document.getElementById("currentMethodCall").innerHTML = 'CURRENT FUNCTION CALL: dataController.runListing('+startRow
+		+','+startCol+','+endRow+','+endCol+','+listingName+')';
+		dc.runListing(startRow,startCol,endRow,endCol,listingName);
+	}
+	
+	function attachTotals() {
+		var rowTotals=false;
+		var colTotals=false;
+		if (document.getElementById("rowTotals").checked) rowTotals=true;
+		if (document.getElementById("colTotals").checked) colTotals=true;
+		dc.attachTotals(rowTotals,colTotals);
+	}
+	
+	function undo() {
+		document.getElementById("currentMethodCall").innerHTML = 'CURRENT FUNCTION CALL: dataController.undo()';
+		dc.undoLastAction();
+	}
+	// - actions
+	
+	function drawChart(dataController) {
+		
+		// Add to table dynamically
+		var table = document.getElementById("resultsTable");
+		
+		// clear previous
+		table.innerHTML = '';
+		
+		document.getElementById("currentQuery").innerHTML = 'CURRENT QUERY TEXT: ' + dataController.getCurrentQueryText();
+	
+		var resultSet = dataController.getCurrentData();
+		
+		// load some more page elements
+		DeepSeeUtils.getFiltersForDataSource(dc.connection,resultSet.getCubeName(),loadFilterDropdown);
+		DeepSeeUtils.getCubeListings(dc.connection,resultSet.getCubeName(),loadListingDropdown);
+		filterCubeName = resultSet.getCubeName();
+		
+		if (resultSet.isError()) {
+			var row = table.insertRow(rowCount);
+			row.insertCell(0).innerHTML = resultSet.getErrorMessage();
+			return;
+		}
+		
+		// First draw column headers
+		var rowCount = table.rows.length;
+		var colHeaderRow = table.insertRow(rowCount);
+		colHeaderRow.insertCell(0).innerHTML = ''; // nub
+		for (var c = 1; c <= resultSet.getColumnCount(); ++c) {
+			var colLabels = resultSet.getOrdinalLabel(1,c);
+			var colLabel = "";
+			for (var l = 0; l < colLabels.length; ++l) {
+				colLabel = (colLabel=="") ? colLabels[l] : colLabels + ' / ' + colLabels[l];
+			}
+			colHeaderRow.insertCell(c).innerHTML = colLabel;
+		}
+		for (var i = 1; i <= resultSet.getRowCount(); ++i) {
+			var rowCount = table.rows.length;
+			var row = table.insertRow(rowCount);
+			
+			var rowLabels = resultSet.getOrdinalLabel(2,i);
+			var rowLabel = "";
+			for (var l = 0; l < rowLabels.length; ++l) {
+				rowLabel = (rowLabel=="") ? rowLabels[l] : rowLabels + ' / ' + rowLabels[l];
+			}
+			row.insertCell(0).innerHTML = rowLabel;
+			for (var j = 1; j <= resultSet.getColumnCount(); ++j) {
+				dataPoint = resultSet.getOrdinalValue(i,j,1); // formatted
+				row.insertCell(j).innerHTML = dataPoint;
+			}
+		}
+	}
+</script>
+<h1 align="center">Test Page -- DeepSeeDataController Object</h1>
+<br />
+</head>
+
+<body onload="initializePage()">
+<form>
+Username: <input type="text" name="username" id="username">    Password: <input type="password" name="password" id="password">    Application: <input type="text" name="application" id="application">   Namespace: <input type="text" name="namespace" id="namespace"><br>
+</form>
+<textarea id="text" rows="4" cols="50">
+select outlet.region.members on 1, {[Measures].[Amount Sold],[Measures].[Max Units],[Measures].[Units Sold]} on 0 from holefoods
+</textarea>
+<br />
+<br />
+<button onclick="initializePage()">
+Run
+</button>
+<br />
+<br />
+<button onclick="applyFilter()">
+Apply Filter
+</button>
+<select id="filterDropdown" onchange="loadMemberDropdown()"></select>
+<select id="memberDropdown"></select>
+<br />
+<br />
+<button onclick="sortData()">
+Sort
+</button>
+Axis:
+<select id="sortAxis" >
+<option value="1">Columns</option>
+<option value="2">Rows</option>
+</select>
+Position:
+<input type="text" id="sortPosition" value="1" size="4" />
+Direction:
+<select id="sortDirection" >
+<option value="1">Ascending</option>
+<option value="-1">Descending</option>
+</select>
+Type:
+<select id="sortType" >
+<option value="numeric">Numeric</option>
+<option value="alphabetic">Alphabetic</option>
+</select>
+<br />
+<br />
+<button onclick="drillDown()">
+Drill Down
+</button>
+Axis: 
+<select id="drillAxis" >
+<option value="2">Rows</option>
+<option value="1">Columns</option>
+</select>
+Position: 
+<input type="text" id="drillPosition" value="1" size="4" />
+<br />
+<br />
+<button onclick="runListing()">
+Run Listing
+</button>
+StartRow:
+<input id="startRow" type="text" value="1" size="4" />
+StartCol:
+<input id="startCol" type="text" value="1" size="4" />
+EndRow:
+<input id="endRow" type="text" value="1" size="4" />
+EndCol:
+<input id="endCol" type="text" value="1" size="4" />
+Listing Name:
+<select id="listingDropdown"></select>
+<br />
+<br />
+<form>
+Row Totals: <input type="checkbox" id="rowTotals" checked value="rowTotals"> </input>
+Column Totals: <input type="checkbox" id="colTotals" checked value="colTotals"> </input>
+</form>
+<button onclick="attachTotals()">
+Attach Totals
+</button>
+<br />
+<br />
+<button onclick="undo()">
+Undo
+</button>
+<br />
+<br />
+<p id="currentQuery"></p>
+<p id="currentMethodCall"></p>
+<table id="resultsTable" class="table table-bordered table-striped">
+</table>
+</body>

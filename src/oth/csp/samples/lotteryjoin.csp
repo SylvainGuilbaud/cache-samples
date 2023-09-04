@@ -1,0 +1,83 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<html>
+<head>
+
+<!-- SPECIFY THE SUPERCLASSES USED FOR THIS PAGE -->
+<CSP:class super="%CSP.Page,User.LotteryUtils" description="PRIVATE:Add New User page of Lottery Example.">
+
+<title>Lottery Join</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body background="dollars2.jpg" bgcolor="black">
+
+<!-- DISPLAY A STANDARD TITLE USING AN INHERITED METHOD. -->
+#(..displayTitle())#
+
+<font face="Lucida Sans" color="yellow" size="+3">
+
+To become a member, please fill out the following form.
+
+<p align="center">
+<form name="theForm">
+<table>
+<tr>
+	<td align="right"><font face="Lucida Sans" color="yellow" size="+2">User Name:</font></td>
+	<td><input type="text" name="UserName"></td>
+</tr>
+<tr>
+	<td align="right"><font face="Lucida Sans" color="yellow" size="+2">First Name:</font></td>
+	<td><input type="text" name="FirstName"></td>
+</tr>
+<tr>
+	<td align="right"><font face="Lucida Sans" color="yellow" size="+2">Last Name:</font></td>
+	<td><input type="text" name="LastName"></td>
+</tr>
+<tr>
+	<td align="right"><font face="Lucida Sans" color="yellow" size="+2">Password:</font></td>
+	<td><input type="password" name="pass1"></td>
+</tr>
+<tr>
+	<td align="right"><font face="Lucida Sans" color="yellow" size="+2">Password (<i>verify</i>):</font></td>
+	<td><input type="password" name="pass2"></td>
+</tr>
+<tr>
+	<td align="right"></td>
+	<td><input type="button" value="Submit" onclick="#call(..submitform(self.document.theForm.UserName.value,self.document.theForm.FirstName.value,self.document.theForm.LastName.value,self.document.theForm.pass1.value,self.document.theForm.pass2.value))#;"></td>
+</tr>
+</table>
+</form>
+</p>
+
+</font>
+
+<script language="Cache" method="submitform" arguments="user:%String,first:%String,last:%String,pass1:%String,pass2:%String" returntype="">
+	// Validate the data and if not correct return a message.
+	If user=""||(first="")||(last="")||(pass1="")||(pass2="") {
+		&js<alert('Please fill out all fields.');>
+		Quit
+	}
+	If pass1'=pass2 {
+		&js<alert('You have entered two different passwords. Please try again.');
+				CSPPage.document.theForm.pass1.value = '';
+				CSPPage.document.theForm.pass2.value = '';>
+		Quit
+	}
+	If ##class(LotteryUser).findUser(user)'="" {
+		&js<alert('The user name you have entered is already being used. Please try a different name.');>
+	}
+	
+	// invoke server side method to add new user
+	Set x=##class(LotteryUser).addNewUser(user,first,last,pass1)
+	
+	If (x = 1) {
+		// jump to main page !!!
+		&js<CSPPage.document.location = '#url(lottery.csp)#';>
+	}
+
+	Quit
+</script>
+
+
+</body>
+</html>

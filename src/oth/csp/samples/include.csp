@@ -1,0 +1,22 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Use <b>CSP:INCLUDE</b> tag to include another CSP page">
+
+<html>
+<head></head>
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;csp:Include&gt; Tag Sample">
+This sample uses the <b>csp:Include</b> tag to run another CSP page to render
+a section of HTML. This allows you to create components and then include these
+components from your master CSP page. As this master page will include the
+&lt;head&gt; tag for example the component does not include these tags.
+</isc:SAMPLE>
+
+<p>
+This text is generated from the main page<p>
+<csp:Include Page="includedpage.csp?PARAM=ABC">
+
+</body>
+</html>
+

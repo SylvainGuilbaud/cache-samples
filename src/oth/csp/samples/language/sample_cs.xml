@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MsgFile Language="cs">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Zobraz zdrojový kód</Message>
+      <Message Id="menu">Menu příkladů</Message>
+      <Message Id="Language">Česky</Message>
+      <Message Id="LangEnglish">Czech</Message>
+      <Message Id="LangComment">Příklad zobrazení stránky v místním jazyce</Message>
+      <Message Id="LangTitle">Příklad jazykové lokalizace</Message>
+      <Message Id="LangDesc">Tento příklad demonstruje způsob jak zobrazit CSP stránku buď použitím preferovaného jazyka
+prohlížeče nebo manuálním výběrem jazyka.</Message>
+      <Message Id="LangText1">
+Tato stránka byla přeložena do více jazyků. Nejdříve se zobrazí v preferovaném jazyce,
+který je nastaven v prohlížeči.</Message>
+      <Message Id="LangText2">
+K zobrazení stránky v jiném než preferovaném jazyce, vyberte jazyk z následujícího 
+seznamu a klikněte na tlačítko &quot;Zvol jazyk&quot;.
+Všechny následující lokalizované stránky v této relaci budou zobrazeny pomocí vybraného jazyka.</Message>
+      <Message Id="LangText3">
+Pro zobrazení XML souboru obsahujícího daný překlad, vyberte jazyk ze seznamu 
+a klikněte na tlačítko &quot;Zobraz XML data&quot;.</Message>
+      <Message Id="LangText4">
+Zdrojový kód této stránky předvádí ukázku provedení lokalizace.
+Tento příklad také demonstruje kód, který načítá překlady.</Message>
+      <Message Id="LangSet">Zvol jazyk</Message>
+      <Message Id="LangDisplay">Zobraz XML data</Message>
+   </MsgDomain>
+</MsgFile>

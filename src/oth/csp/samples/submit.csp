@@ -1,0 +1,104 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of submitting a simple form using CSP.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Simple Submit Example">
+This sample demonstrates how to submit a simple form with CSP and how the
+results of the submit are made available on the server.
+<br>To try it, enter values below and press <b>Submit</b> and then look at the
+values displayed in the <b>Queries</b> section of the inspector page.
+</isc:SAMPLE>
+
+<!-- Define a simple form containing various input elements -->
+<!-- Use a table to format the form -->
+
+<form name="theForm" action="inspector.csp">
+<table cellspacing="5">
+<tr>
+	<!-- Text field -->
+	<td align="right"><b>Text:</b></td>
+	<td><input type="text" name="fldText"></td>
+</tr>
+<tr>
+	<!-- Password field -->
+	<td align="right"><b>Password:</b></td>
+	<td><input type="password" name="fldPassword"></td>
+</tr>
+	<!-- Hidden field: give this a preset value -->
+	<input type="hidden" name="fldHidden" value="This is a hidden value">
+<tr>
+	<!-- Checkbox -->
+	<td align="right"><b>Checkbox:</b></td>
+	<td><input type="checkbox" name="fldCheckbox"></td>
+</tr>
+<tr>
+	<!-- Textarea -->
+	<td align="right"><b>Textarea:</b></td>
+	<td>
+		<textarea name="fldTextarea"></textarea>
+	</td>
+</tr>
+<tr>
+	<!-- Radio buttons -->
+	<td align="right"><b>Radio buttons:</b></td>
+	<td>
+		<input type="radio" name="fldRadio" value="RED">Red
+		<input type="radio" name="fldRadio" value="GREEN">Green
+		<input type="radio" name="fldRadio" value="BLUE">Blue
+	</td>
+</tr>
+<tr>
+	<!-- Multiple Choice Checkboxes -->
+	<td align="right"><b>Multiple Choice Checkboxes:</b></td>
+	<td>
+		<input type="checkbox" name="fldMultiCheckbox" value="SPRING">Spring
+		<input type="checkbox" name="fldMultiCheckbox" value="SUMMER">Summer
+		<input type="checkbox" name="fldMultiCheckbox" value="AUTUMN">Autumn
+		<input type="checkbox" name="fldMultiCheckbox" value="WINTER">Winter
+	</td>
+</tr>
+<tr>
+	<!-- Select (combo box) -->
+	<td align="right"><b>Select:</b></td>
+	<td>
+		<select name="fldSelect">
+			<option value="1" selected>One
+			<option value="2">Two
+			<option value="3">Three
+
+		</select>
+	</td>
+</tr>
+<tr>
+	<!-- Multiple Select (combo box) -->
+	<td align="right"><b>Multiple Select:</b></td>
+	<td>
+		<select name="fldMultiSelect" multiple size="4">
+			<option value="1">North
+			<option value="2">East
+			<option value="3">South
+			<option value="4">West
+
+		</select>
+	</td>
+</tr>
+
+<tr>
+	<!-- Place a submit button on the form -->
+	<td align="right"></td>
+	<td><input type="submit" name="Submit">
+	<!-- Place a reset button on the form -->
+	<input type="reset"></td>
+</tr>
+</table>
+</form>
+
+</body>
+</html>

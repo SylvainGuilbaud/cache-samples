@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<MsgFile Language="es">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Fuente</Message>
+      <Message Id="menu">Menú Samples</Message>
+      <Message Id="Language">Español</Message>
+      <Message Id="LangEnglish">Spanish</Message>
+      <Message Id="LangComment">Demo de presentación de una página en el lenguaje local</Message>
+      <Message Id="LangTitle">Ejemplo de Localización de Lenguaje</Message>
+      <Message Id="LangDesc">Este ejemplo muestra como presentar una página CSP usando el lenguaje preferido del navegador o un lenguaje seleccionado.</Message>
+      <Message Id="LangText1">
+Esta página ha sido traducida a un determinado número de lenguajes.
+Inicialmente aparece en el lenguaje preferido, según sea especificado en la configuración de su navegador.</Message>
+      <Message Id="LangText2">
+Para mostrar esta página en un lenguaje distinto al preferido, seleccione un lenguaje de los 
+indicados abajo y pulse el botón "Establecer Lenguaje".
+Todas las páginas subsiguientes que estén localizadas y se llamen en esta sesión se mostrarán
+ utilizando el lenguaje seleccionado.
+	</Message>
+      <Message Id="LangText3">
+Para mostrar el fichero fuente XML que contiene una traducción en particular,
+ seleccione el lenguaje correspondiente y pulse el botón "Mostrar Recurso".
+	</Message>
+      <Message Id="LangText4">
+El código fuente de esta página sirve de ejemplo de como realizar la localización.
+ Este ejemplo también muestra el código que carga las traducciones.</Message>
+      <Message Id="LangSet">Establecer Lenguaje</Message>
+      <Message Id="LangDisplay">Mostrar Recurso</Message>
+   </MsgDomain>
+</MsgFile>

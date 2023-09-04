@@ -1,0 +1,46 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of how to upload a file from the browser.">
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Upload a file Sample">
+This sample uses an '&lt;input type=file&gt;' element in a form to upload a file
+from the web browser to CSP. Pick a file and hit the submit button to try it.
+</isc:SAMPLE>
+
+<!-- HTML Form to submit the file. You must specify the enctype="multipart/form-data" -->
+<!-- for this to work -->
+<form enctype="multipart/form-data" method="post" action="upload.csp">
+	Enter a file to upload here: <input type=file size=30 name=FileStream>
+	<p>
+	<ul><input type="submit" value="Upload file"></ul>
+	<p>
+</form>
+
+<!-- As form is submitted to this page look to see if we have the stream in the %request object -->
+<csp:if condition='($data(%request.MimeData("FileStream",1)))'>
+	<hr><br>
+	Submitted filename: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).FileName))#</b><br>
+	Size of file: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).Size))#</b><br>
+	Mime Section: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).MimeSection))#</b><br>
+	Type of stream: <b>#(..EscapeHTML($classname(%request.MimeData("FileStream",1))))#</b><br>
+	Content Type: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).ContentType))#</b><br>
+	<br>
+	First 200 characters of stream:<br>
+	<ul>
+	<script language="Cache" runat="server">
+		New bytes
+		Set bytes=%request.MimeData("FileStream",1).Read(200)
+		Set bytes=##class(%CSP.Utils).DecodeData(bytes)
+		Write bytes,!
+	</script>
+	</ul>
+</csp:if>
+
+</body>
+</html>

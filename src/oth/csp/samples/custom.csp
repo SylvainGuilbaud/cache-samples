@@ -1,0 +1,50 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of CSP Custom HTML Tags (Bar Chart)">
+<html>
+<head>
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Custom HTML Tag Sample">
+This sample demonstrates how to use a custom HTML tag 
+within a CSP page. In this case, we have created a set of tags for 
+displaying a barchart using simple HTML primitives (in this case, a
+table containing a series of stretched images).<br>
+</isc:SAMPLE>
+
+<font face="Verdana,Arial,Helvetica,sans-serif">
+The custom tags are defined using a CSP rule file 
+(<a href="showsource.csp?PAGE=/csp/samples/barchart.csr">barchart.csr</a>).
+</font>
+
+<div align="center">
+
+<br><b>Projected Sales</b><br><br>
+
+<!-- Use the custom BARCHART tag to define a barchart -->
+  
+<isc:BARCHART bgcolor="white">
+	<isc:ELEMENT height="1" label="2002">
+	<isc:ELEMENT height="20" label="2003">
+	<isc:ELEMENT Height="50" label="2004">
+	<isc:ELEMENT height="100" label="2005">
+	<isc:ELEMENT height="#(100+$Random(200))#" label="2006">
+</isc:BARCHART>
+
+<br>
+<i>As of #($zdt($h,9))#</i>
+
+</div>
+
+<!-- test to make sure rule is loaded. -->
+<csp:if condition=('##class(%CSP.RuleMgr).RuleExists("iscbarchart"))>
+<font color="red">In order for this demo to work, the rule file 
+<i>barchart.csr</i> must be loaded for this namespace.</font>
+</csp:if>
+
+</body>
+</html>
+

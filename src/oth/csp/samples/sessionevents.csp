@@ -1,0 +1,75 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Example of how to use the session timeout event.">
+
+<!-- All session event classes MUST inherit from %CSP.SessionEvents -->
+<csp:class super="%CSP.Page,%CSP.SessionEvents">
+
+<html>
+<head>
+</head>
+<body bgcolor="#CCCCFF">
+<isc:SAMPLE title="CSP Session events">
+This page demonstrates how to set the session timeout and how
+to make this call the OnTimeout() and OnEndSession() method of your class.
+</isc:SAMPLE>
+
+<br>
+Hit refresh immediately and you will see the global is defined, however wait at least
+ten seconds and hit refresh to check that the ^TimeoutEvent global has been cleaned up.
+The idea is that this session creates some extra storage (in this case a global)
+that needs to be removed when the session ends. Note that normally you would setup
+the event class in the CSP application configuration parameter, however this is done
+in this example as a demonstration, this also means that you do not get the OnStartSession() event
+when the session is first created as the EventClass is not defined at this point.
+Normally the event class will be a separate
+class rather than combining it with a CSP page as has been done here, however this
+keeps the example self-contained.
+<br>
+<br>
+The ^TimeoutEvent global is currently: <b>#($S($D(^TimeoutEvent):"Defined",1:"Undefined"))#</b><br>
+<br>
+
+<script language="Cache" runat="server">
+#; Ten second timeout on the session
+Set %session.AppTimeout = 10
+#; The timeout method is in this page, so make the event class
+#; the name of this class when it is compiled
+Set %session.EventClass = "csp.sessionevents"
+
+If '$Data(^TimeoutEvent) {
+	&html<Timeout and event class set, and global ^TimeoutEvent = 1<br>
+		In ten seconds the OnTimeout() and OnEndSession() method will be run
+		which will kill
+		the ^TimeoutEvent global, if you refresh the browser before ten
+		seconds you will see that the global is now set.>
+	Set ^TimeoutEvent=1
+} else {
+	&html<Timeout on the session not yet occurred, hit refresh again
+		after waiting at least ten seconds for the session to time out.>
+}
+</script>
+<br>
+<br>
+
+
+<!-- Normally you would define a seperate class with a class method -->
+<!-- called OnTimeout() derived from %CSP.SessionEvents, however to
+<!-- keep this example self contained -->
+<!-- we can put the class method in this CSP page -->
+<script language="Cache" method="OnTimeout" arguments="" returntype="">
+	#; Timeout for this session is now called put any timeout specific code here
+</script>
+
+<!-- Normally you would define a seperate class with a class method -->
+<!-- called OnEndSession() derived from %CSP.SessionEvents, however to
+<!-- keep this example self contained -->
+<!-- we can put the class method in this CSP page -->
+<script language="Cache" method="OnEndSession" arguments="" returntype="">
+	#; Session is being closed, so remove our storage in ^TimeoutEvent
+	Kill ^TimeoutEvent
+</script>
+
+
+</body>
+</html>
+

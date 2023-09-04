@@ -1,0 +1,89 @@
+<!-- Copyright (c) 2004 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using permanent cookies.">
+
+<html>
+
+<head>
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="Using cookies example">
+This sample allows cookies to be set in the browser and displays any
+cookies that are sent from the browser to this page.
+</isc:SAMPLE>
+
+<script language="Cache" method="OnPreHTTP" arguments="" returntype="%Boolean">
+	If $get(%request.Data("NAME",1))'="" {
+		Do %response.SetCookie(%request.Data("NAME",1),$get(%request.Data("VALUE",1)),$get(%request.Data("EXPIRES",1)),$get(%request.Data("PATH",1)))
+	}
+	Quit 1
+</script>
+
+<p>
+
+<script language="Cache" runat="server">
+	If $get(%request.Data("NAME",1))'="" {
+		Write "Cookie sent to browser in this page, it will show up in the list if you click <a href='cookie.csp'>here</a><br>",!
+		Write "<ul>",!
+		Write "<li>Name: ",..EscapeHTML(%request.Data("NAME",1)),"</li>",!
+		Write "<li>Value: ",..EscapeHTML($get(%request.Data("VALUE",1))),"</li>",!
+		Write "<li>Expires: ",..EscapeHTML($get(%request.Data("EXPIRES",1))),"</li>",!
+		Write "<li>Path: ",..EscapeHTML($get(%request.Data("PATH",1))),"</li>",!
+		Write "</ul>",!
+	}
+</script>
+
+<form name="theForm" action="cookie.csp">
+<table cellspacing="5">
+<tr>
+	<td align="right"><b>Name</b></td>
+	<td><input type="text" size="10" name="NAME" value='#(..EscapeHTML($get(%request.Data("NAME",1))))#'></td>
+	<td><i>Name of cookie to set.</i></td>
+</tr>
+<tr>
+	<td align="right"><b>Value</b></td>
+	<td><input type="text" size="20" name="VALUE" value='#(..EscapeHTML($get(%request.Data("VALUE",1))))#'></td>
+	<td><i>Value to set cookie to.</i></td>
+</tr>
+<tr>
+	<td align="righ"t><b>Expires</b></td>
+	<td><input type="text" size="30" name="EXPIRES" value='#(..EscapeHTML($get(%request.Data("EXPIRES",1))))#'></td>
+	<td><i>Expiration date of cookie</i></td>
+</tr>
+<tr>
+	<td align="right"><b>Path</b></td>
+	<td><input type="text" size="10" name="PATH" value='#(..EscapeHTML($get(%request.Data("PATH",1),"/")))#'></td>
+	<td><i>Path to set cookie to</i></td>
+</tr>
+<tr>
+	<td align="right"></td>
+	<td><input type="submit" name="btnSubmit" value="Go"></td>
+</tr>
+</table>
+</form>
+If the Expires field is blank this is an in-memory cookie, but if you specify a value for the expires field
+then this becomes a permanent cookie that will be removed at the time specified. The format for the expires
+field is 'Wdy, DD-Mon-YYYY HH:MM:SS GMT', for example 'Wednesday, 24-Mar-2004 18:12:00 GMT'.
+
+
+<p>
+<ul>
+<script language="Cache" runat="server">
+	Set cookie=%request.NextCookie("")
+	While cookie'="" {
+		For count=1:1:%request.CountCookie(cookie) {
+			Write "<li>",cookie," - ",..EscapeHTML(%request.GetCookie(cookie,count)),"</li>",!
+		}
+		Set cookie=%request.NextCookie(cookie)
+	}
+</script>
+</ul>
+<hr>
+
+
+
+</body>
+</html>

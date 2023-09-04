@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MsgFile Language="ru">
+   <MsgDomain Domain="sample">
+      <Message Id="source">Source</Message>
+      <Message Id="menu">Samples Menu</Message>
+      <Message Id="Language">Русский</Message>
+      <Message Id="LangEnglish">Russian</Message>
+      <Message Id="LangComment">Пример использования локализованных сообщений</Message>
+      <Message Id="LangTitle">Пример локализации</Message>
+      <Message Id="LangDesc">Пример демонстрирует возможности CSP отображать страницы на языке, предпочтительном для браузера, либо на выбранном языке.</Message>
+      <Message Id="LangText1">
+Эта страница была переведена на несколько языков. При первом обращении, страница отображается на языке, установленном в браузере в качестве предпочтительного.</Message>
+      <Message Id="LangText2">
+Чтобы просмотреть эту страницу на языке, отличном от предпочтительного, выберите язык из списка и нажмите на кнопку "Установить язык". Все последующие локализованные страницы будут показаны с использованием выбранного языка.</Message>
+      <Message Id="LangText3">
+Чтобы просмотреть XML ресурс, содержащий перевод на конкретный язык, выберите язык из списка и нажмите на кнопку "Показать ресурс".</Message>
+      <Message Id="LangText4">
+Исходный код данной страницы служит примером использования возможностей локализации. Пример также иллюстрирует код, который загружает локализованные сообщения.</Message>
+      <Message Id="LangSet">Установить язык</Message>
+      <Message Id="LangDisplay">Показать ресурс</Message>
+   </MsgDomain>
+</MsgFile>

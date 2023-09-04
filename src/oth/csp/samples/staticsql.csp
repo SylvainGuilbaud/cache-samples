@@ -1,0 +1,76 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>SCRIPT LANGUAGE=SQL CURSOR=</B> tag to run a static SQL Query.">
+
+<html>
+
+<head>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title='&lt;script language="SQL" cursor &gt; Tag Sample'>
+This sample uses the <b>&lt;script language=&quot;SQL&quot; cursor &gt;</b> tag to execute a
+static, embedded SQL query against the Cach&eacute; Object Database.
+The results are displayed in a table using the <b>&lt;csp:while&gt;</b> tag to
+iterate over and fetch the resulting rows and columns.
+</isc:SAMPLE>
+
+<!-- 	Define a static query using embedded SQL -->
+<script language="SQL" cursor="query">
+SELECT Name,SSN FROM Sample.Person ORDER BY Name
+</script>
+
+<!-- DISPLAY THE SQL QUERY -->
+
+<form name="theForm">
+<table cellspacing="5">
+<tr>
+	<td align="right"><b>SQL Query:</b></td>
+	<td>SELECT Name,SSN FROM Sample.Person ORDER BY Name</td>
+</tr>
+<tr>
+	<td align="right"><b>Number of Rows:</b></td>
+    <td><input type="text" name="count" size="5" value='#(..EscapeHTML($get(%request.Data("count",1))))#'>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" name="btnSubmit" value=" Go "></td>
+</tr>
+</table>
+</form>
+
+<hr>
+
+<!-- CREATE A TABLE TO DISPLAY THE RESULTS -->
+
+<table border="1" bgcolor="#DDDDFF">
+<tr>
+
+	<!-- DISPLAY COLUMN HEADERS -->
+	<th align="left"><b>Name</b></th>
+	<th align="left"><b>SSN</b></th>
+</tr>
+
+<csp:if condition=$get(%request.Data("count",1))'="">
+	<!-- LOOP AND FETCH COUNT ROWS -->
+	<csp:while cursor="query" into="name,ssn" counter="row" condition='row<$get(%request.Data("count",1))'>
+
+	<!-- USE ALTERNATING STYLES FOR ROW FOR ZEBRA EFFECT (# is modulo operator) -->
+	<tr class="#($S(row#2:"DarkRow",1:"LightRow"))#">
+		<td>#(..EscapeHTML(name))#</td>
+		<td>#(..EscapeHTML(ssn))#</td>
+	</tr>
+	</csp:while>
+<csp:else>
+	<!-- LOOP AND FETCH ALL ROWS -->
+	<csp:while cursor="query" into="name,ssn" counter="row">
+
+	<!-- USE ALTERNATING STYLES FOR ROW FOR ZEBRA EFFECT (# is modulo operator) -->
+	<tr class="#($S(row#2:"DarkRow",1:"LightRow"))#">
+		<td>#(..EscapeHTML(name))#</td>
+		<td>#(..EscapeHTML(ssn))#</td>
+	</tr>
+	</csp:while>
+</csp:if>
+</table>
+
+</body>
+</html>

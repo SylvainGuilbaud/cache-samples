@@ -1,0 +1,102 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>CSP:LOOP</B> tag to create a loop.">
+
+<html>
+
+<head>
+
+<!-- Client JavaScript to validate the values entered by the user -->
+<script language="JavaScript" type="text/javascript">
+function validateForm()
+{
+	var el;
+	var val;
+
+	// step
+	var el = self.document.theForm.STEP;
+	var val = parseFloat(el.value);
+
+	if (isNaN(val) || (val == 0)) {
+		alert('Please enter a valid, non-zero number for STEP.');
+		return false;
+	}
+	else {
+		el.value = val;
+	}
+
+	// from
+	var el = self.document.theForm.FROM;
+	var val = parseFloat(el.value);
+
+	if (isNaN(val)) {
+		alert('Please enter a valid number for FROM.');
+		return false;
+	}
+	else {
+		el.value = val;
+	}
+
+	// to
+	var el = self.document.theForm.TO;
+	var val = parseFloat(el.value);
+
+	if (isNaN(val)) {
+		alert('Please enter a valid number for TO.');
+		return false;
+	}
+	else {
+		el.value = val;
+	}
+
+	return true;
+}
+
+</script>
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="&lt;csp:loop&gt; Tag Sample">
+This sample uses the <b>csp:loop</b> tag to repeat of section of HTML.
+<br>To change the loop enter values below and press <b>Go</b>.
+</isc:SAMPLE>
+
+<!-- HTML Form to gather user input -->
+<form name="theForm" onsubmit="return validateForm();">
+<table cellspacing="5">
+<tr>
+	<td align="right"><b>FROM:</b></td>
+	<td><input type="text" size="5" name="FROM" value='#(..EscapeHTML($get(%request.Data("FROM",1),1)))#'></td>
+	<td><i>Starting value for the loop.</i></td>
+</tr>
+<tr>
+	<td align="right"><b>TO:</b></td>
+	<td><input type="text" size="5" name="TO" value='#(..EscapeHTML($get(%request.Data("TO",1),1)))#'></td>
+	<td><i>Ending value for the loop.</i></td>
+</tr>
+<tr>
+	<td align="right"><b>STEP:</b></td>
+	<td><input type="text" size="5" name="STEP" value='#(..EscapeHTML($get(%request.Data("STEP",1),1)))#'></td>
+	<td><i>Amount counter is incremented with each iteration.</i></td>
+</tr>
+<tr>
+	<td align="right"></td>
+	<td><input type="submit" name="btnSubmit" value="Go"></td>
+</tr>
+</table>
+</form>
+
+<hr>
+<ul>
+
+<!-- Here is the actual example: loop using values specified within the request -->
+
+<csp:loop counter="x" from='#($get(%request.Data("FROM",1),1))#' step='#($get(%request.Data("STEP",1),1))#' to='#($get(%request.Data("TO",1),1))#'>
+<li>This is item <b>#(x)#</b>.</li>
+</csp:loop>
+</ul>
+<hr>
+
+</body>
+</html>

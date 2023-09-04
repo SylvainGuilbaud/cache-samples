@@ -1,0 +1,99 @@
+<!-- Copyright (c) 2001 InterSystems Inc. ALL RIGHTS RESERVED. -->
+<csp:class description="Demo of using <B>#call</B> or <b>#server</b> to process client events on the application server.">
+<html>
+
+<head>
+
+<script language="JavaScript" type="text/javascript">
+
+function lookupZipCode()
+{
+	// first do browser-side validation of zip code
+	var zipcode = self.document.Address.Zip.value;
+	if (zipcode.length != 5) {
+		alert('A ZIP code must contain 5 digits.');
+		return false;
+	}
+
+	// now invoke server-side method to look up zipcode
+	if (self.document.Address.type[0].checked) {
+		#call(..validateZipCode(zipcode))#
+	} else {
+		#server(..validateZipCode(zipcode))#
+	}
+	
+	return true;
+}
+
+</script>
+
+</head>
+
+<body bgcolor="#CCCCFF">
+
+<!-- display standard sample template using a custom tag -->
+<isc:SAMPLE title="CSP Zipcode Sample">
+This sample uses the CSP <b>#call</b> or <b>#server</b> command to invoke a 
+server-side event in response to a client event.
+<br><b>Note:</b> The zipcode database only contains zipcodes for the 
+Northeastern United States and Beverly Hills e.g. 90210.
+</isc:SAMPLE>
+
+<font face="Verdana,Arial,Helvetica,sans-serif">
+Please enter a zipcode (a 5 digit number) in the field below and press <b>Tab</b>.
+</font>
+
+<form name="Address">
+<table cellspacing="5">
+<tr>
+<td align="right"><b>Zip:</b></td>
+<td><input type="text" name="Zip" value="" onblur="lookupZipCode();"></td>
+</tr>
+<tr>
+<td align="right"><b>City:</b></td>
+<td><input type="text" name="City" value=""></td>
+</tr>
+<tr>
+<td align="right"><b>State:</b></td>
+<td><input type="text" name="State" value=""></td>
+</tr>
+</table>
+<br><br><br><br>
+Select type of server call:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="type" value="call" checked>#call&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" name="type" value="server">#server
+</form>
+
+<hr>
+
+<!-- Define a server-side method to process in-page events -->
+
+<script language="Cache" method="validateZipCode" arguments="zip:%String">
+
+	// server-side method to process zipcode
+	// this method looks up a zipcode in the database
+	// if it finds it, it sends it back to the browser using JavaScript
+	// if it cannot, it returns a JavaScript alert command.
+
+	New city,state
+
+	// Use embedded SQL to perform the query
+	&sql(	SELECT City,State INTO :city,:state
+			FROM Sample.USZipCode
+			WHERE ZipCode = :zip )
+
+	If (SQLCODE '= 0) {
+		// send alert command back to browser.
+		&javascript< alert(#(..QuoteJS("Failed to find ZIP code: "_zip))#); >
+	}
+	Else {
+		// update fields within browser.
+		&javascript< CSPPage.document.Address.City.value = '#(city)#'; >
+		&javascript< CSPPage.document.Address.State.value = '#(state)#'; >
+	}
+
+	Quit
+</script>
+
+</body>
+</html>

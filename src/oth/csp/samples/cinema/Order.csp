@@ -1,0 +1,57 @@
+<html>
+<head>
+	<title>Cach&eacute; Cinema Order</title>
+</head>
+<body bgcolor="#FFFFFF">
+<csp:class super="%CSP.Page,Cinema.Utils">
+<csp:if condition='%session.IsDefined("Order")'>
+	<img src="YourTicketOrder.gif" width="248" height="65">
+	<br>
+	<script language="Cache" runat="server">
+		// Open Order object for display
+		Set ord = ##class(Cinema.TicketOrder).%OpenId(%session.Data("Order"))
+	</script>
+	<form name=OrderTickets>
+		<csp:loop counter="num" from=1 to=#(ord.Items.Count())#>
+			<script language="Cache" runat="server">Set itm = ord.Items.GetAt(num)</script>
+			For the #($ZT(itm.Show.StartTime,4))#
+			showing of #(itm.Show.Film.Title)# at #(itm.Show.Theater.TheaterName)#<br>
+			<br>
+			&nbsp;&nbsp;
+			<select name="AdultTickets" onChange="#server(..ChangeQuantity(#(num)#,1,this.selectedIndex))#">
+			<csp:loop counter=i from=0 to=9>
+				<csp:if condition='itm.AdultTickets=i'>
+					<option selected>
+				<csp:else>
+					<option>
+				</csp:if>
+				#(i)#</option>
+			</csp:loop>
+			</select>
+			Adult Tickets<br>
+			<br>
+			&nbsp;&nbsp;
+			<select name="ChildTickets" onChange="#server(..ChangeQuantity(#(num)#,2,this.selectedIndex))#">
+			<csp:loop counter=i from=0 to=9>
+				<csp:if condition='itm.ChildTickets=i'>
+					<option selected>
+				<csp:else>
+					<option>
+				</csp:if>
+				#(i)#</option>
+			</csp:loop>
+			</select>
+			Child Tickets<br>
+			<br>
+		</csp:loop>
+		Total Charge:
+		<input type=text name=TotalCharge size=5 readonly value=#($FN(ord.Total,"",2))#>
+	</form>
+	If you would like confirmation of your order, please enter your email address
+	<form method="post" action="Cinema.TicketConfirm.cls" name="OrderForm">
+		<input type="text" name="OrderEmail" size="35"><br>
+		<input type="submit" name="CompleteOrder" value="Complete Order">
+	</form>
+</csp:if>
+</body>
+</html>
