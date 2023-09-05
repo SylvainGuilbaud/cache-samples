@@ -40,7 +40,7 @@ Class Sample.CustomResultSet Extends %SQL.CustomResultSet
 
 // of the result row. SQLNAME, type, type parameters, etc. can all be defined.
 
-//
+// 
 
 // The following properties form a row:
 

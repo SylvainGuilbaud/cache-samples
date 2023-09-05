@@ -99,7 +99,6 @@ XData ReportModel
 
 XData ReportDisplay [ XMLNamespace = "http://www.intersystems.com/zen/report/display" ]
 {
-
 <report xmlns="http://www.intersystems.com/zen/report/display"
 name="FilmDCRData">
 	<init>

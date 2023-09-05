@@ -1446,5 +1446,3 @@ GetUserAttributes(LD,CurrentEntry,Attributes) Private {
  }  
 } 
 
-
-
